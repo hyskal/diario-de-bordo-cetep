@@ -126,11 +126,35 @@
             flex-direction: column;
             gap: 8px;
         }
+        
+        .form-group-flex {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
         .form-group label {
             font-size: 14px;
             font-weight: 500;
             color: var(--foreground);
+        }
+        
+        .add-student-btn {
+            background-color: var(--primary);
+            color: var(--primary-foreground);
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            line-height: 1;
+            transition: background-color 0.2s ease;
+        }
+
+        .add-student-btn:hover {
+            background-color: var(--academic-dark);
         }
 
         .input-field {
@@ -142,6 +166,7 @@
             color: var(--foreground);
             font-size: 16px;
             transition: border-color 0.2s ease, box-shadow 0.2s ease;
+            box-sizing: border-box; /* Adicionado para evitar quebra de layout */
         }
 
         .input-field:focus {
@@ -308,9 +333,12 @@
 
             <div class="card form-card">
                 <h2><i class="fas fa-user-graduate"></i>Informações do Estudante</h2>
-                <div class="form-group">
-                    <label for="titulo">Nome do(s) estudante(s)</label>
-                    <input type="text" id="titulo" class="input-field" placeholder="Digite o nome completo do estudante">
+                <div class="form-group" id="student-names-group">
+                    <div class="form-group-flex">
+                        <label for="titulo">Nome do(s) estudante(s)</label>
+                        <button type="button" class="add-student-btn" id="add-student-btn">+</button>
+                    </div>
+                    <input type="text" id="titulo" class="input-field student-name-input" placeholder="Digite o nome completo do estudante">
                 </div>
                 <div class="form-group">
                     <label for="turma">Turma</label>
@@ -401,9 +429,12 @@
         const successMessage = document.getElementById('success-message');
         const downloadLinkContainer = document.getElementById('download-link-container');
         const downloadButton = document.getElementById('download-button');
+        const addStudentBtn = document.getElementById('add-student-btn');
+        const studentNamesGroup = document.getElementById('student-names-group');
 
         const MAX_IMAGE_WIDTH = 800;
         const JPEG_QUALITY = 0.8;
+        let studentCount = 1;
 
         function updateProgressBar(percentage) {
             const roundedPercentage = Math.round(percentage);
@@ -472,8 +503,28 @@
             });
         });
 
+        // Event listener para adicionar novo campo de nome
+        addStudentBtn.addEventListener('click', () => {
+            const newInput = document.createElement('input');
+            studentCount++;
+            newInput.type = 'text';
+            newInput.id = `titulo-${studentCount}`;
+            newInput.className = 'input-field student-name-input';
+            newInput.placeholder = 'Digite o nome completo do estudante';
+            studentNamesGroup.appendChild(newInput);
+        });
+
         document.getElementById('gerar-pdf').addEventListener('click', function() {
-            const titulo = document.getElementById('titulo').value;
+            // Concatena todos os nomes dos estudantes
+            const studentNameInputs = document.querySelectorAll('.student-name-input');
+            let studentNames = [];
+            studentNameInputs.forEach(input => {
+                if (input.value.trim() !== '') {
+                    studentNames.push(input.value.trim());
+                }
+            });
+            const titulo = studentNames.join(', ');
+
             const turma = document.getElementById('turma').value;
             const email = document.getElementById('email').value;
 
@@ -526,12 +577,11 @@
                         let cellHeight;
                         let margin;
 
-                        // Condição para definir o layout da grade
                         if (files.length <= 4) {
-                            cellHeight = 110; // Altura para grade 2x2
+                            cellHeight = 110;
                             margin = 10;
                         } else {
-                            cellHeight = 76.5; // Altura para grade 2x3
+                            cellHeight = 76.5;
                             margin = 5;
                         }
 
