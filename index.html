@@ -603,11 +603,11 @@
                 const headerText = `${titulo} - ${turma} - ${email} - Gerado em: ${dataHora.toLocaleString()}`;
                 
                 doc.setFontSize(10);
-                const headerTextX = 10;
+                const headerTextX = 20; // Alinhado com o início das células da tabela
                 const headerTextY = 20;
-                const textWidth = pageWidth - (logoWidthMm + logoMargin) - (2 * headerTextX);
+                const textWidth = pageWidth - (logoWidthMm + logoMargin) - headerTextX - 10; // 10 é uma margem extra
                 const splitText = doc.splitTextToSize(headerText, textWidth);
-                doc.text(splitText, headerTextX, headerTextY);
+                doc.text(splitText, headerTextX, headerTextY, { align: 'left' });
 
                 const files = [];
                 for (let i = 1; i <= 6; i++) {
@@ -720,7 +720,7 @@
                     alert('Por favor, selecione pelo menos uma foto.');
                     progressContainer.style.display = 'none';
                 }
-            }; // Fim da função onload
+            };
         });
     </script>
 </body>
