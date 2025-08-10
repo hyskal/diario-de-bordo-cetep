@@ -370,8 +370,23 @@
         </footer>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
     <script>
-        // Seu script JavaScript completo e corrigido, incluindo o upload e as validações.
+        // Configurações do seu projeto Firebase
+        var firebaseConfig = {
+            apiKey: "SUA_API_KEY", // Substitua pela sua chave de API
+            authDomain: "diario-de-bordo-cetep.firebaseapp.com",
+            projectId: "diario-de-bordo-cetep",
+            storageBucket: "diario-de-bordo-cetep.appspot.com", // Adicione o .appspot.com ao final do bucket
+            messagingSenderId: "SEU_MESSAGING_SENDER_ID",
+            appId: "SEU_APP_ID"
+        };
+        // Inicialize o Firebase
+        firebase.initializeApp(firebaseConfig);
+        const storage = firebase.storage();
+    </script>
+    <script>
         const IMGBB_API_KEY = 'de77ac8c0ed26c71bbcb0ee71d45c707';
         const progressContainer = document.getElementById('progress-container');
         const progressBar = document.getElementById('progress-bar');
@@ -514,27 +529,37 @@
 
                         updateProgressBar(75);
                         
+                        // Lógica de upload para o Firebase Storage
                         const pdfBlob = doc.output('blob');
-                        const uploadUrl = 'https://0x0.st';
-                        const formData = new FormData();
-                        formData.append('file', pdfBlob, 'diario_de_bordo.pdf');
-                        
-                        return fetch(uploadUrl, {
-                            method: 'POST',
-                            body: formData
-                        });
-                    })
-                    .then(response => response.text())
-                    .then(url => {
-                        updateProgressBar(100);
-                        successMessage.style.display = 'block';
+                        const pdfFileName = `diario_de_bordo_${Date.now()}.pdf`;
 
-                        generatedLinkInput.value = url.trim();
-                        linkContainer.style.display = 'block';
+                        const storageRef = storage.ref(pdfFileName);
+                        const uploadTask = storageRef.put(pdfBlob);
+
+                        uploadTask.on('state_changed', 
+                            (snapshot) => {
+                                const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                                updateProgressBar(75 + (progress * 0.25));
+                            },
+                            (error) => {
+                                console.error('Erro no upload para o Firebase Storage:', error);
+                                alert('Ocorreu um erro no upload do PDF. Por favor, tente novamente.');
+                                progressContainer.style.display = 'none';
+                            },
+                            () => {
+                                uploadTask.snapshot.ref.getDownloadURL().then(downloadURL => {
+                                    updateProgressBar(100);
+                                    successMessage.style.display = 'block';
+
+                                    generatedLinkInput.value = downloadURL;
+                                    linkContainer.style.display = 'block';
+                                });
+                            }
+                        );
                     })
                     .catch(error => {
-                        console.error('Erro ao gerar o PDF ou fazer upload:', error);
-                        alert('Ocorreu um erro ao gerar o PDF ou fazer o upload. Por favor, tente novamente.');
+                        console.error('Erro ao gerar o PDF:', error);
+                        alert('Ocorreu um erro ao gerar o PDF. Por favor, tente novamente.');
                         progressContainer.style.display = 'none';
                     });
             } else {
