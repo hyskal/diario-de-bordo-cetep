@@ -82,6 +82,10 @@
             margin-bottom: 8px;
         }
 
+        .header-title i {
+            margin-right: 10px; /* Adicionado espaçamento para o ícone */
+        }
+
         .header-subtitle {
             font-size: 14px;
             color: var(--muted-foreground);
@@ -132,6 +136,10 @@
             justify-content: space-between;
             align-items: center;
         }
+        
+        .form-group-flex label {
+            margin-right: auto;
+        }
 
         .form-group label {
             font-size: 14px;
@@ -139,7 +147,7 @@
             color: var(--foreground);
         }
         
-        .add-student-btn {
+        .add-student-btn, .remove-student-btn {
             background-color: var(--primary);
             color: var(--primary-foreground);
             border: none;
@@ -151,10 +159,20 @@
             cursor: pointer;
             line-height: 1;
             transition: background-color 0.2s ease;
+            margin-left: 8px;
         }
-
+        
+        .remove-student-btn {
+            background-color: var(--destructive);
+            display: none;
+        }
+        
         .add-student-btn:hover {
             background-color: var(--academic-dark);
+        }
+        
+        .remove-student-btn:hover {
+            background-color: #c81d1d;
         }
 
         .input-field {
@@ -166,7 +184,7 @@
             color: var(--foreground);
             font-size: 16px;
             transition: border-color 0.2s ease, box-shadow 0.2s ease;
-            box-sizing: border-box; /* Adicionado para evitar quebra de layout */
+            box-sizing: border-box;
         }
 
         .input-field:focus {
@@ -318,7 +336,7 @@
 
     <div class="container">
         <header>
-            <h1 class="header-title">Sistema de Envio das Fotos do Diário de Bordo</h1>
+            <h1 class="header-title"><i class="fas fa-book-open"></i>Sistema de Envio das Fotos do Diário de Bordo</h1>
             <p class="header-subtitle">Organize e compartilhe as atividades acadêmicas com facilidade</p>
         </header>
 
@@ -336,7 +354,10 @@
                 <div class="form-group" id="student-names-group">
                     <div class="form-group-flex">
                         <label for="titulo">Nome do(s) estudante(s)</label>
-                        <button type="button" class="add-student-btn" id="add-student-btn">+</button>
+                        <div>
+                            <button type="button" class="remove-student-btn" id="remove-student-btn">-</button>
+                            <button type="button" class="add-student-btn" id="add-student-btn">+</button>
+                        </div>
                     </div>
                     <input type="text" id="titulo" class="input-field student-name-input" placeholder="Digite o nome completo do estudante">
                 </div>
@@ -430,11 +451,11 @@
         const downloadLinkContainer = document.getElementById('download-link-container');
         const downloadButton = document.getElementById('download-button');
         const addStudentBtn = document.getElementById('add-student-btn');
+        const removeStudentBtn = document.getElementById('remove-student-btn');
         const studentNamesGroup = document.getElementById('student-names-group');
 
         const MAX_IMAGE_WIDTH = 800;
         const JPEG_QUALITY = 0.8;
-        let studentCount = 1;
 
         function updateProgressBar(percentage) {
             const roundedPercentage = Math.round(percentage);
@@ -503,19 +524,27 @@
             });
         });
 
-        // Event listener para adicionar novo campo de nome
         addStudentBtn.addEventListener('click', () => {
             const newInput = document.createElement('input');
-            studentCount++;
             newInput.type = 'text';
-            newInput.id = `titulo-${studentCount}`;
             newInput.className = 'input-field student-name-input';
             newInput.placeholder = 'Digite o nome completo do estudante';
+            
             studentNamesGroup.appendChild(newInput);
+            removeStudentBtn.style.display = 'inline-block';
+        });
+
+        removeStudentBtn.addEventListener('click', () => {
+            const studentInputs = studentNamesGroup.querySelectorAll('.student-name-input');
+            if (studentInputs.length > 1) {
+                studentNamesGroup.removeChild(studentInputs[studentInputs.length - 1]);
+            }
+            if (studentInputs.length <= 2) {
+                removeStudentBtn.style.display = 'none';
+            }
         });
 
         document.getElementById('gerar-pdf').addEventListener('click', function() {
-            // Concatena todos os nomes dos estudantes
             const studentNameInputs = document.querySelectorAll('.student-name-input');
             let studentNames = [];
             studentNameInputs.forEach(input => {
