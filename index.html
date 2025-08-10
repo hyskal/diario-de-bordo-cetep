@@ -590,10 +590,9 @@
             
             logoImg.onload = function() {
                 const pageWidth = doc.internal.pageSize.getWidth();
-                const logoWidthMm = 40;
-                const aspectRatio = logoImg.width / logoImg.height;
-                const logoHeightMm = logoWidthMm / aspectRatio;
-                const logoMargin = 15;
+                const logoWidthMm = 25;
+                const logoHeightMm = 25;
+                const logoMargin = 10;
 
                 function addLogo(doc) {
                     doc.addImage(logoImg, 'PNG', pageWidth - logoWidthMm - logoMargin, logoMargin, logoWidthMm, logoHeightMm);
@@ -648,7 +647,7 @@
                             imageDatas.forEach((imageData, index) => {
                                 if (doc.internal.pageSize.height < y + cellHeight + margin) {
                                     doc.addPage();
-                                    addLogo(doc); // Adiciona a logo na nova página
+                                    addLogo(doc);
                                     y = 20;
                                 }
                                 
