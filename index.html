@@ -244,36 +244,26 @@
             display: none;
         }
 
-        #generated-link {
+        #download-button {
             width: 100%;
-            padding: 10px;
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            background-color: var(--input);
-            color: var(--foreground);
-            font-size: 14px;
-            box-sizing: border-box;
-            text-align: center;
-            margin-bottom: 8px;
-        }
-
-        #copy-button {
-            width: 100%;
-            padding: 10px;
+            padding: 12px;
             background-color: var(--primary);
             color: var(--primary-foreground);
             border: none;
             border-radius: var(--radius);
-            font-size: 14px;
-            font-weight: 500;
+            font-size: 16px;
+            font-weight: 600;
             cursor: pointer;
             transition: background-color 0.2s ease;
-        }
-        
-        #copy-button:hover {
-            background-color: var(--academic-dark);
+            margin-top: 0;
+            text-decoration: none; /* Adicionado para remover sublinhado de link */
+            display: inline-block;
         }
 
+        #download-button:hover {
+            background-color: var(--academic-dark);
+        }
+        
         footer {
             text-align: center;
             font-size: 12px;
@@ -356,10 +346,10 @@
                     <i class="fas fa-check-circle"></i> PDF gerado e enviado com sucesso!
                 </div>
 
-                <div id="link-container" class="link-container">
-                    <label for="generated-link">Link do arquivo:</label>
-                    <input type="text" id="generated-link" readonly>
-                    <button id="copy-button">Copiar Link</button>
+                <div id="download-link-container" class="link-container">
+                    <a id="download-button" class="button" style="text-align: center; padding: 12px; font-size: 16px; margin-top: 0;" href="#" target="_blank">
+                        <i class="fas fa-file-download"></i> Seu arquivo está pronto, clique para baixar
+                    </a>
                 </div>
             </div>
         </main>
@@ -391,9 +381,8 @@
         const progressContainer = document.getElementById('progress-container');
         const progressBar = document.getElementById('progress-bar');
         const successMessage = document.getElementById('success-message');
-        const linkContainer = document.getElementById('link-container');
-        const generatedLinkInput = document.getElementById('generated-link');
-        const copyButton = document.getElementById('copy-button');
+        const downloadLinkContainer = document.getElementById('download-link-container');
+        const downloadButton = document.getElementById('download-button');
 
         function updateProgressBar(percentage) {
             const roundedPercentage = Math.round(percentage);
@@ -453,12 +442,6 @@
             });
         });
 
-        copyButton.addEventListener('click', function() {
-            generatedLinkInput.select();
-            document.execCommand('copy');
-            alert('Link copiado para a área de transferência!');
-        });
-
         document.getElementById('gerar-pdf').addEventListener('click', function() {
             const titulo = document.getElementById('titulo').value;
             const turma = document.getElementById('turma').value;
@@ -476,16 +459,19 @@
 
             progressContainer.style.display = 'block';
             successMessage.style.display = 'none';
-            linkContainer.style.display = 'none';
+            downloadLinkContainer.style.display = 'none';
             updateProgressBar(0);
             
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
+            const dataHora = new Date();
 
             doc.setFontSize(14);
             doc.text(titulo, 105, 20, { align: 'center' });
             doc.setFontSize(12);
-            doc.text(turma, 105, 30, { align: 'center' });
+            doc.text(`${turma} - Gerado em: ${dataHora.toLocaleString()}`, 105, 30, { align: 'center' });
+            doc.setFontSize(10);
+            doc.text(`E-mail do Responsável: ${email}`, 105, 40, { align: 'center' });
 
             const files = [];
             for (let i = 1; i <= 6; i++) {
@@ -507,40 +493,55 @@
                 Promise.all(uploadPromises)
                     .then(imageDatas => {
                         let x = 20; 
-                        let y = 40; 
+                        let y = 50; 
                         const cellWidth = 85; 
+                        const cellHeight = 85;
                         const margin = 10;
                         const cellPadding = 2;
                         
                         imageDatas.forEach((imageData, index) => {
+                            let finalWidth = cellWidth;
+                            let finalHeight = (imageData.height * finalWidth) / imageData.width;
+
+                            if (finalHeight > cellHeight) {
+                                finalHeight = cellHeight;
+                                finalWidth = (imageData.width * finalHeight) / imageData.height;
+                            }
+
                             if (index % 2 === 0 && index !== 0) {
-                                y += 95; 
+                                y += cellHeight + margin; 
                                 x = 20; 
                             }
-                            const proportionalHeight = (imageData.height * cellWidth) / imageData.width;
-                            doc.rect(x - cellPadding, y - cellPadding, cellWidth + 2 * cellPadding, proportionalHeight + 2 * cellPadding);
-                            doc.addImage(imageData.url, 'JPEG', x, y, cellWidth, proportionalHeight);
+                            
+                            const imgX = x + (cellWidth - finalWidth) / 2;
+                            const imgY = y + (cellHeight - finalHeight) / 2;
+                            doc.rect(x - cellPadding, y - cellPadding, cellWidth + 2 * cellPadding, cellHeight + 2 * cellPadding);
+                            doc.addImage(imageData.url, 'JPEG', imgX, imgY, finalWidth, finalHeight);
                             x += cellWidth + margin;
                         });
 
-                        const dataHora = new Date();
-                        doc.setFontSize(8);
-                        doc.text(`Gerado em: ${dataHora.toLocaleString()}`, 105, 280, { align: 'center' });
-
                         updateProgressBar(75);
                         
-                        // Lógica de upload para o Firebase Storage
                         const pdfBlob = doc.output('blob');
-                        const pdfFileName = `diario_de_bordo_${Date.now()}.pdf`;
+                        
+                        // Formatação do nome do arquivo (ddmmaaaa-turma-nomes.pdf)
+                        const dia = String(dataHora.getDate()).padStart(2, '0');
+                        const mes = String(dataHora.getMonth() + 1).padStart(2, '0');
+                        const ano = dataHora.getFullYear();
+                        const dataFormatada = `${dia}${mes}${ano}`;
 
-                        const storageRef = storage.ref(`diarios/${pdfFileName}`); // Cria uma referência para o arquivo no storage
-                        const uploadTask = storageRef.put(pdfBlob); // Inicia o upload do blob
+                        const turmaSanitizada = turma.replace(/\s+/g, '-').replace(/[^\w-]/g, '');
+                        const tituloSanitizado = titulo.replace(/\s+/g, '-').replace(/[^\w-]/g, '');
+                        
+                        const pdfFileName = `${dataFormatada}-${turmaSanitizada}-${tituloSanitizado}.pdf`;
 
-                        // Monitora o progresso do upload
+                        const storageRef = storage.ref(`diarios/${pdfFileName}`);
+                        const uploadTask = storageRef.put(pdfBlob);
+
                         uploadTask.on('state_changed',
                             (snapshot) => {
                                 const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                                updateProgressBar(75 + (progress * 0.25)); // Continua a partir de 75%
+                                updateProgressBar(75 + (progress * 0.25));
                             },
                             (error) => {
                                 console.error("Erro no upload do PDF:", error);
@@ -548,12 +549,14 @@
                                 progressContainer.style.display = 'none';
                             },
                             () => {
-                                // Upload concluído com sucesso
                                 uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
                                     updateProgressBar(100);
                                     successMessage.style.display = 'block';
-                                    linkContainer.style.display = 'block';
-                                    generatedLinkInput.value = downloadURL;
+                                    
+                                    downloadButton.href = downloadURL;
+                                    downloadLinkContainer.style.display = 'block';
+
+                                    alert('Seus arquivos foram enviados para o professor, baixe uma cópia do arquivo se preferir.');
                                 });
                             }
                         );
