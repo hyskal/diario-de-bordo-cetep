@@ -375,12 +375,12 @@
     <script>
         // Configurações do seu projeto Firebase
         var firebaseConfig = {
-            apiKey: "SUA_API_KEY", // Substitua pela sua chave de API
+            apiKey: "AIzaSyD0vFDHBkjGAdTSzY7TtdbDGX-9BUiJEbk",
             authDomain: "diario-de-bordo-cetep.firebaseapp.com",
             projectId: "diario-de-bordo-cetep",
-            storageBucket: "diario-de-bordo-cetep.appspot.com", // Adicione o .appspot.com ao final do bucket
-            messagingSenderId: "SEU_MESSAGING_SENDER_ID",
-            appId: "SEU_APP_ID"
+            storageBucket: "diario-de-bordo-cetep.firebasestorage.app",
+            messagingSenderId: "106679083009",
+            appId: "1:106679083009:web:c51bae8358c727f33be000"
         };
         // Inicialize o Firebase
         firebase.initializeApp(firebaseConfig);
@@ -533,37 +533,38 @@
                         const pdfBlob = doc.output('blob');
                         const pdfFileName = `diario_de_bordo_${Date.now()}.pdf`;
 
-                        const storageRef = storage.ref(pdfFileName);
-                        const uploadTask = storageRef.put(pdfBlob);
+                        const storageRef = storage.ref(`diarios/${pdfFileName}`); // Cria uma referência para o arquivo no storage
+                        const uploadTask = storageRef.put(pdfBlob); // Inicia o upload do blob
 
-                        uploadTask.on('state_changed', 
+                        // Monitora o progresso do upload
+                        uploadTask.on('state_changed',
                             (snapshot) => {
                                 const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                                updateProgressBar(75 + (progress * 0.25));
+                                updateProgressBar(75 + (progress * 0.25)); // Continua a partir de 75%
                             },
                             (error) => {
-                                console.error('Erro no upload para o Firebase Storage:', error);
-                                alert('Ocorreu um erro no upload do PDF. Por favor, tente novamente.');
+                                console.error("Erro no upload do PDF:", error);
+                                alert('Erro ao fazer o upload do PDF. Tente novamente.');
                                 progressContainer.style.display = 'none';
                             },
                             () => {
-                                uploadTask.snapshot.ref.getDownloadURL().then(downloadURL => {
+                                // Upload concluído com sucesso
+                                uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
                                     updateProgressBar(100);
                                     successMessage.style.display = 'block';
-
-                                    generatedLinkInput.value = downloadURL;
                                     linkContainer.style.display = 'block';
+                                    generatedLinkInput.value = downloadURL;
                                 });
                             }
                         );
                     })
                     .catch(error => {
-                        console.error('Erro ao gerar o PDF:', error);
-                        alert('Ocorreu um erro ao gerar o PDF. Por favor, tente novamente.');
+                        console.error('Erro ao processar as imagens:', error);
+                        alert('Ocorreu um erro ao processar as imagens. Tente novamente.');
                         progressContainer.style.display = 'none';
                     });
             } else {
-                alert('Por favor, selecione pelo menos uma imagem para gerar o PDF.');
+                alert('Por favor, selecione pelo menos uma foto.');
                 progressContainer.style.display = 'none';
             }
         });
