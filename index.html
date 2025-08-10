@@ -723,7 +723,6 @@
                                         }
                                     );
                                 } else {
-                                    // Apenas salva localmente
                                     doc.save(pdfFileName);
                                     updateProgressBar(100);
                                     successMessage.textContent = 'Seu arquivo não foi enviado ao professor, mas você pode salvá-lo.';
@@ -746,7 +745,7 @@
                     alert('Erro ao carregar a configuração do sistema. Tente novamente.');
                     progressContainer.style.display = 'none';
                 });
-            }; // Fim da função onload da logo
+            };
         });
     </script>
 </body>
