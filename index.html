@@ -76,7 +76,7 @@
         }
         
         .header-logo {
-            max-width: 150px; /* Tamanho da logomarca */
+            max-width: 150px;
             margin-bottom: 10px;
             display: block;
             margin-left: auto;
@@ -585,122 +585,143 @@
             const doc = new jsPDF();
             const dataHora = new Date();
 
-            const headerText = `${titulo} - ${turma} - ${email} - Gerado em: ${dataHora.toLocaleString()}`;
+            const logoImg = new Image();
+            logoImg.src = 'https://i.ibb.co/JFSDTT6J/logo-cetep-lnab-100kb.png';
             
-            doc.setFontSize(10);
-            const splitText = doc.splitTextToSize(headerText, doc.internal.pageSize.width - 40);
-            doc.text(splitText, 105, 20, { align: 'center' });
+            logoImg.onload = function() {
+                const pageWidth = doc.internal.pageSize.getWidth();
+                const logoWidthMm = 40;
+                const aspectRatio = logoImg.width / logoImg.height;
+                const logoHeightMm = logoWidthMm / aspectRatio;
+                const logoMargin = 15;
 
-            const files = [];
-            for (let i = 1; i <= 6; i++) {
-                const fotoInput = document.getElementById('foto' + i);
-                if (fotoInput.files.length > 0) {
-                    files.push(fotoInput.files[0]);
+                function addLogo(doc) {
+                    doc.addImage(logoImg, 'PNG', pageWidth - logoWidthMm - logoMargin, logoMargin, logoWidthMm, logoHeightMm);
                 }
-            }
 
-            if (files.length > 0) {
-                let uploadedCount = 0;
+                addLogo(doc);
+
+                const headerText = `${titulo} - ${turma} - ${email} - Gerado em: ${dataHora.toLocaleString()}`;
                 
-                const uploadPromises = files.map(file => uploadImageToImgbb(file).then(imageData => {
-                    uploadedCount++;
-                    updateProgressBar((uploadedCount / files.length) * 100 * 0.7);
-                    return imageData;
-                }));
+                doc.setFontSize(10);
+                const headerTextX = 10;
+                const headerTextY = 20;
+                const textWidth = pageWidth - (logoWidthMm + logoMargin) - (2 * headerTextX);
+                const splitText = doc.splitTextToSize(headerText, textWidth);
+                doc.text(splitText, headerTextX, headerTextY);
 
-                Promise.all(uploadPromises)
-                    .then(imageDatas => {
-                        let y = 35;
-                        let cellWidth = 85; 
-                        let cellHeight;
-                        let margin;
+                const files = [];
+                for (let i = 1; i <= 6; i++) {
+                    const fotoInput = document.getElementById('foto' + i);
+                    if (fotoInput.files.length > 0) {
+                        files.push(fotoInput.files[0]);
+                    }
+                }
 
-                        if (files.length <= 4) {
-                            cellHeight = 110;
-                            margin = 10;
-                        } else {
-                            cellHeight = 76.5;
-                            margin = 5;
-                        }
+                if (files.length > 0) {
+                    let uploadedCount = 0;
+                    
+                    const uploadPromises = files.map(file => uploadImageToImgbb(file).then(imageData => {
+                        uploadedCount++;
+                        updateProgressBar((uploadedCount / files.length) * 100 * 0.7);
+                        return imageData;
+                    }));
 
-                        let x = 20; 
-                        const cellPadding = 2;
-                        
-                        imageDatas.forEach((imageData, index) => {
-                            if (doc.internal.pageSize.height < y + cellHeight + margin) {
-                                doc.addPage();
-                                y = 20;
+                    Promise.all(uploadPromises)
+                        .then(imageDatas => {
+                            let y = 35;
+                            let cellWidth = 85; 
+                            let cellHeight;
+                            let margin;
+
+                            if (files.length <= 4) {
+                                cellHeight = 110;
+                                margin = 10;
+                            } else {
+                                cellHeight = 76.5;
+                                margin = 5;
                             }
+
+                            let x = 20; 
+                            const cellPadding = 2;
                             
-                            let finalWidth = cellWidth;
-                            let finalHeight = (imageData.height * finalWidth) / imageData.width;
+                            imageDatas.forEach((imageData, index) => {
+                                if (doc.internal.pageSize.height < y + cellHeight + margin) {
+                                    doc.addPage();
+                                    addLogo(doc); // Adiciona a logo na nova página
+                                    y = 20;
+                                }
+                                
+                                let finalWidth = cellWidth;
+                                let finalHeight = (imageData.height * finalWidth) / imageData.width;
 
-                            if (finalHeight > cellHeight) {
-                                finalHeight = cellHeight;
-                                finalWidth = (imageData.width * finalHeight) / imageData.height;
-                            }
+                                if (finalHeight > cellHeight) {
+                                    finalHeight = cellHeight;
+                                    finalWidth = (imageData.width * finalHeight) / imageData.height;
+                                }
 
-                            if (index % 2 === 0 && index !== 0) {
-                                y += cellHeight + margin; 
-                                x = 20; 
-                            }
+                                if (index % 2 === 0 && index !== 0) {
+                                    y += cellHeight + margin; 
+                                    x = 20; 
+                                }
+                                
+                                const imgX = x + (cellWidth - finalWidth) / 2;
+                                const imgY = y + (cellHeight - finalHeight) / 2;
+                                doc.rect(x - cellPadding, y - cellPadding, cellWidth + 2 * cellPadding, cellHeight + 2 * cellPadding);
+                                doc.addImage(imageData.url, 'JPEG', imgX, imgY, finalWidth, finalHeight);
+                                x += cellWidth + margin;
+                            });
+
+                            updateProgressBar(75);
                             
-                            const imgX = x + (cellWidth - finalWidth) / 2;
-                            const imgY = y + (cellHeight - finalHeight) / 2;
-                            doc.rect(x - cellPadding, y - cellPadding, cellWidth + 2 * cellPadding, cellHeight + 2 * cellPadding);
-                            doc.addImage(imageData.url, 'JPEG', imgX, imgY, finalWidth, finalHeight);
-                            x += cellWidth + margin;
+                            const pdfBlob = doc.output('blob');
+                            
+                            const dia = String(dataHora.getDate()).padStart(2, '0');
+                            const mes = String(dataHora.getMonth() + 1).padStart(2, '0');
+                            const ano = dataHora.getFullYear();
+                            const dataFormatada = `${dia}${mes}${ano}`;
+
+                            const turmaSanitizada = turma.replace(/\s+/g, '-').replace(/[^\w-]/g, '');
+                            const tituloSanitizado = titulo.replace(/\s+/g, '-').replace(/[^\w-]/g, '');
+                            
+                            const pdfFileName = `${dataFormatada}-${turmaSanitizada}-${tituloSanitizado}.pdf`;
+
+                            const storageRef = storage.ref(`diarios/${pdfFileName}`);
+                            const uploadTask = storageRef.put(pdfBlob);
+
+                            uploadTask.on('state_changed',
+                                (snapshot) => {
+                                    const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                                    updateProgressBar(75 + (progress * 0.25));
+                                },
+                                (error) => {
+                                    console.error("Erro no upload do PDF:", error);
+                                    alert('Erro ao fazer o upload do PDF. Tente novamente.');
+                                    progressContainer.style.display = 'none';
+                                },
+                                () => {
+                                    uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
+                                        updateProgressBar(100);
+                                        successMessage.style.display = 'block';
+                                        
+                                        downloadButton.href = downloadURL;
+                                        downloadLinkContainer.style.display = 'block';
+
+                                        alert('Seus arquivos foram enviados para o professor, baixe uma cópia do arquivo se preferir.');
+                                    });
+                                }
+                            );
+                        })
+                        .catch(error => {
+                            console.error('Erro ao processar as imagens:', error);
+                            alert('Ocorreu um erro ao processar as imagens. Tente novamente.');
+                            progressContainer.style.display = 'none';
                         });
-
-                        updateProgressBar(75);
-                        
-                        const pdfBlob = doc.output('blob');
-                        
-                        const dia = String(dataHora.getDate()).padStart(2, '0');
-                        const mes = String(dataHora.getMonth() + 1).padStart(2, '0');
-                        const ano = dataHora.getFullYear();
-                        const dataFormatada = `${dia}${mes}${ano}`;
-
-                        const turmaSanitizada = turma.replace(/\s+/g, '-').replace(/[^\w-]/g, '');
-                        const tituloSanitizado = titulo.replace(/\s+/g, '-').replace(/[^\w-]/g, '');
-                        
-                        const pdfFileName = `${dataFormatada}-${turmaSanitizada}-${tituloSanitizado}.pdf`;
-
-                        const storageRef = storage.ref(`diarios/${pdfFileName}`);
-                        const uploadTask = storageRef.put(pdfBlob);
-
-                        uploadTask.on('state_changed',
-                            (snapshot) => {
-                                const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                                updateProgressBar(75 + (progress * 0.25));
-                            },
-                            (error) => {
-                                console.error("Erro no upload do PDF:", error);
-                                alert('Erro ao fazer o upload do PDF. Tente novamente.');
-                                progressContainer.style.display = 'none';
-                            },
-                            () => {
-                                uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
-                                    updateProgressBar(100);
-                                    successMessage.style.display = 'block';
-                                    
-                                    downloadButton.href = downloadURL;
-                                    downloadLinkContainer.style.display = 'block';
-
-                                    alert('Seus arquivos foram enviados para o professor, baixe uma cópia do arquivo se preferir.');
-                                });
-                            }
-                        );
-                    })
-                    .catch(error => {
-                        console.error('Erro ao processar as imagens:', error);
-                        alert('Ocorreu um erro ao processar as imagens. Tente novamente.');
-                        progressContainer.style.display = 'none';
-                    });
-            } else {
-                alert('Por favor, selecione pelo menos uma foto.');
-                progressContainer.style.display = 'none';
-            }
+                } else {
+                    alert('Por favor, selecione pelo menos uma foto.');
+                    progressContainer.style.display = 'none';
+                }
+            }; // Fim da função onload
         });
     </script>
 </body>
