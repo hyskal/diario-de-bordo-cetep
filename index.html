@@ -522,10 +522,20 @@
                 Promise.all(uploadPromises)
                     .then(imageDatas => {
                         let y = 35;
+                        let cellWidth = 85; 
+                        let cellHeight;
+                        let margin;
+
+                        // Condição para definir o layout da grade
+                        if (files.length <= 4) {
+                            cellHeight = 110; // Altura para grade 2x2
+                            margin = 10;
+                        } else {
+                            cellHeight = 76.5; // Altura para grade 2x3
+                            margin = 5;
+                        }
+
                         let x = 20; 
-                        const cellWidth = 85; 
-                        const cellHeight = 76.5; // Diminuído em 10%
-                        const margin = 5; // Reduzido em 50%
                         const cellPadding = 2;
                         
                         imageDatas.forEach((imageData, index) => {
