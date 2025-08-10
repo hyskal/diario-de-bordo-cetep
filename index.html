@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Envio das Fotos do Diário de Bordo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            /* Cores base para o tema */
+            --background: #fff;
+            --foreground: #111827; /* cinza escuro */
+            --card: #f9fafb; /* cinza claro */
+            --card-foreground: #111827;
+            --primary: #0079F2; /* azul principal */
+            --primary-foreground: #fff;
+            --secondary: #e5e7eb; /* cinza secundário */
+            --secondary-foreground: #111827;
+            --muted-foreground: #6b7280;
+            --accent: #2c323f; /* acento para o dark */
+            --accent-foreground: #fff;
+            --destructive: #ef4444; /* vermelho para erros */
+            --destructive-foreground: #fff;
+            --border: #e5e7eb;
+            --input: #f3f4f6;
+            --ring: #93c5fd;
+
+            /* Cores acadêmicas */
+            --academic-blue: #064097;
+            --academic-dark: #052a65;
+            --success-green: #22c55e;
+
+            /* Configuração de fonte e bordas */
+            --font-sans: 'Inter', sans-serif;
+            --radius: 0.75rem; /* 12px */
+        }
+
+        /* Estilos globais */
+        body {
+            font-family: var(--font-sans);
+            background-color: var(--background);
+            color: var(--foreground);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 800px;
+            padding: 32px;
+            box-sizing: border-box;
+        }
+
+        .card {
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        header .container {
+            background-color: var(--background);
+            border-bottom: 1px solid var(--secondary);
+            padding: 24px;
+            text-align: center;
+            margin: 0 auto;
+        }
+        
+        .header-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--foreground);
+            margin-bottom: 8px;
+        }
+
+        .header-subtitle {
+            font-size: 14px;
+            color: var(--muted-foreground);
+        }
+
+        .instructions-card {
+            background-color: #eef7ff;
+            border-color: #d1e5f8;
+            color: var(--academic-dark);
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .instructions-card i {
+            color: var(--academic-blue);
+            margin-top: 4px;
+        }
+
+        .instructions-card h3 {
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .instructions-card p {
+            font-size: 14px;
+            color: #4b5563;
+        }
+
+        .form-card h2 {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--foreground);
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group label {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--foreground);
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 10px 16px;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            background-color: var(--input);
+            color: var(--foreground);
+            font-size: 16px;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(0, 121, 242, 0.2);
+        }
+
+        .file-input-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-top: 24px;
+        }
+        
+        .file-input-wrapper {
+            position: relative;
+            text-align: center;
+            background-color: var(--input);
+            border: 2px dashed var(--border);
+            border-radius: var(--radius);
+            padding: 20px;
+            transition: border-color 0.2s ease;
+            cursor: pointer;
+        }
+
+        .file-input-wrapper:hover {
+            border-color: var(--primary);
+        }
+
+        .file-input-wrapper input[type="file"] {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .file-status {
+            font-size: 12px;
+            color: var(--success-green);
+            display: none;
+            margin-top: 4px;
+        }
+
+        .button {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--primary);
+            color: var(--primary-foreground);
+            border: none;
+            border-radius: var(--radius);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            margin-top: 24px;
+        }
+
+        .button:hover {
+            background-color: var(--academic-dark);
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 25px;
+            background-color: var(--secondary);
+            border-radius: var(--radius);
+            margin-top: 16px;
+            overflow: hidden;
+            display: none;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: var(--success-green);
+            color: var(--primary-foreground);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 500;
+            transition: width 0.4s ease;
+            width: 0%;
+        }
+
+        .success-message {
+            margin-top: 16px;
+            text-align: center;
+            font-size: 16px;
+            color: var(--success-green);
+            display: none;
+        }
+        
+        .link-container {
+            margin-top: 16px;
+            text-align: center;
+            display: none;
+        }
+
+        #generated-link {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            background-color: var(--input);
+            color: var(--foreground);
+            font-size: 14px;
+            box-sizing: border-box;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        #copy-button {
+            width: 100%;
+            padding: 10px;
+            background-color: var(--primary);
+            color: var(--primary-foreground);
+            border: none;
+            border-radius: var(--radius);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        
+        #copy-button:hover {
+            background-color: var(--academic-dark);
+        }
+
+        footer {
+            text-align: center;
+            font-size: 12px;
+            color: var(--muted-foreground);
+            margin-top: 64px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1 class="header-title">Sistema de Envio das Fotos do Diário de Bordo</h1>
+            <p class="header-subtitle">Organize e compartilhe as atividades acadêmicas com facilidade</p>
+        </header>
+
+        <main>
+            <div class="card instructions-card">
+                <i class="fas fa-info-circle fa-lg"></i>
+                <div>
+                    <h3 class="font-medium">Instruções</h3>
+                    <p class="text-sm">Preencha os dados do estudante e selecione até 6 fotos para incluir no diário de bordo. O sistema gerará automaticamente um PDF formatado.</p>
+                </div>
+            </div>
+
+            <div class="card form-card">
+                <h2><i class="fas fa-user-graduate"></i>Informações do Estudante</h2>
+                <div class="form-group">
+                    <label for="titulo">Nome do(s) estudante(s)</label>
+                    <input type="text" id="titulo" class="input-field" placeholder="Digite o nome completo do estudante">
+                </div>
+                <div class="form-group">
+                    <label for="turma">Turma</label>
+                    <input type="text" id="turma" class="input-field" placeholder="Ex: 3º Ano A">
+                </div>
+                <div class="form-group">
+                    <label for="email">E-mail do Responsável</label>
+                    <input type="email" id="email" class="input-field" placeholder="exemplo@email.com">
+                </div>
+
+                <div class="file-input-container">
+                    <div class="file-input-wrapper">
+                        <input type="file" class="file-input" id="foto1" accept="image/*">
+                        <span>Selecione a Foto 1</span>
+                        <div id="status-foto1" class="file-status"><i class="fas fa-check-circle"></i> Arquivo selecionado</div>
+                    </div>
+                    <div class="file-input-wrapper">
+                        <input type="file" class="file-input" id="foto2" accept="image/*">
+                        <span>Selecione a Foto 2</span>
+                        <div id="status-foto2" class="file-status"><i class="fas fa-check-circle"></i> Arquivo selecionado</div>
+                    </div>
+                    <div class="file-input-wrapper">
+                        <input type="file" class="file-input" id="foto3" accept="image/*">
+                        <span>Selecione a Foto 3</span>
+                        <div id="status-foto3" class="file-status"><i class="fas fa-check-circle"></i> Arquivo selecionado</div>
+                    </div>
+                    <div class="file-input-wrapper">
+                        <input type="file" class="file-input" id="foto4" accept="image/*">
+                        <span>Selecione a Foto 4</span>
+                        <div id="status-foto4" class="file-status"><i class="fas fa-check-circle"></i> Arquivo selecionado</div>
+                    </div>
+                    <div class="file-input-wrapper">
+                        <input type="file" class="file-input" id="foto5" accept="image/*">
+                        <span>Selecione a Foto 5</span>
+                        <div id="status-foto5" class="file-status"><i class="fas fa-check-circle"></i> Arquivo selecionado</div>
+                    </div>
+                    <div class="file-input-wrapper">
+                        <input type="file" class="file-input" id="foto6" accept="image/*">
+                        <span>Selecione a Foto 6</span>
+                        <div id="status-foto6" class="file-status"><i class="fas fa-check-circle"></i> Arquivo selecionado</div>
+                    </div>
+                </div>
+
+                <button class="button" id="gerar-pdf">Gerar PDF e Fazer Upload</button>
+
+                <div id="progress-container" class="progress-container">
+                    <div id="progress-bar" class="progress-bar">0%</div>
+                </div>
+                <div id="success-message" class="success-message">
+                    <i class="fas fa-check-circle"></i> PDF gerado e enviado com sucesso!
+                </div>
+
+                <div id="link-container" class="link-container">
+                    <label for="generated-link">Link do arquivo:</label>
+                    <input type="text" id="generated-link" readonly>
+                    <button id="copy-button">Copiar Link</button>
+                </div>
+            </div>
+        </main>
+        
+        <footer>
+            <p>© 2025 Sistema Diário de Bordo. Todos os direitos reservados.</p>
+            <p class="mt-2">Desenvolvido para facilitar o compartilhamento de atividades acadêmicas.</p>
+        </footer>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+    <script>
+        // Seu script JavaScript completo e corrigido, incluindo o upload e as validações.
+        const IMGBB_API_KEY = 'de77ac8c0ed26c71bbcb0ee71d45c707';
+        const progressContainer = document.getElementById('progress-container');
+        const progressBar = document.getElementById('progress-bar');
+        const successMessage = document.getElementById('success-message');
+        const linkContainer = document.getElementById('link-container');
+        const generatedLinkInput = document.getElementById('generated-link');
+        const copyButton = document.getElementById('copy-button');
+
+        function updateProgressBar(percentage) {
+            const roundedPercentage = Math.round(percentage);
+            progressBar.style.width = roundedPercentage + '%';
+            progressBar.textContent = roundedPercentage + '%';
+        }
+
+        function isValidEmail(email) {
+            const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return regex.test(email);
+        }
+
+        function uploadImageToImgbb(file) {
+            return new Promise((resolve, reject) => {
+                const formData = new FormData();
+                formData.append('image', file);
+                
+                fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data && data.data && data.data.url) {
+                        const img = new Image();
+                        img.onload = () => {
+                            resolve({ url: data.data.url, width: img.width, height: img.height });
+                        };
+                        img.onerror = () => {
+                            reject('Erro ao carregar a imagem para obter dimensões.');
+                        };
+                        img.src = data.data.url;
+                    } else {
+                        reject('URL da imagem não encontrada na resposta do Imgbb.');
+                    }
+                })
+                .catch(error => reject(error));
+            });
+        }
+
+        function showFileStatus(fileInputId, statusId) {
+            const fileInput = document.getElementById(fileInputId);
+            const statusDiv = document.getElementById(statusId);
+
+            if (fileInput.files.length > 0) {
+                statusDiv.style.display = 'block';
+            } else {
+                statusDiv.style.display = 'none';
+            }
+        }
+
+        document.querySelectorAll('.file-input').forEach(input => {
+            input.addEventListener('change', function() {
+                const id = this.id;
+                const statusId = 'status-' + id;
+                showFileStatus(id, statusId);
+            });
+        });
+
+        copyButton.addEventListener('click', function() {
+            generatedLinkInput.select();
+            document.execCommand('copy');
+            alert('Link copiado para a área de transferência!');
+        });
+
+        document.getElementById('gerar-pdf').addEventListener('click', function() {
+            const titulo = document.getElementById('titulo').value;
+            const turma = document.getElementById('turma').value;
+            const email = document.getElementById('email').value;
+
+            if (!titulo.trim() || !turma.trim()) {
+                alert('Por favor, preencha o nome do(s) estudante(s) e a turma.');
+                return;
+            }
+
+            if (!isValidEmail(email)) {
+                alert('Por favor, insira um e-mail válido.');
+                return;
+            }
+
+            progressContainer.style.display = 'block';
+            successMessage.style.display = 'none';
+            linkContainer.style.display = 'none';
+            updateProgressBar(0);
+            
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            doc.setFontSize(14);
+            doc.text(titulo, 105, 20, { align: 'center' });
+            doc.setFontSize(12);
+            doc.text(turma, 105, 30, { align: 'center' });
+
+            const files = [];
+            for (let i = 1; i <= 6; i++) {
+                const fotoInput = document.getElementById('foto' + i);
+                if (fotoInput.files.length > 0) {
+                    files.push(fotoInput.files[0]);
+                }
+            }
+
+            if (files.length > 0) {
+                let uploadedCount = 0;
+                
+                const uploadPromises = files.map(file => uploadImageToImgbb(file).then(imageData => {
+                    uploadedCount++;
+                    updateProgressBar((uploadedCount / files.length) * 100 * 0.7);
+                    return imageData;
+                }));
+
+                Promise.all(uploadPromises)
+                    .then(imageDatas => {
+                        let x = 20; 
+                        let y = 40; 
+                        const cellWidth = 85; 
+                        const margin = 10;
+                        const cellPadding = 2;
+                        
+                        imageDatas.forEach((imageData, index) => {
+                            if (index % 2 === 0 && index !== 0) {
+                                y += 95; 
+                                x = 20; 
+                            }
+                            const proportionalHeight = (imageData.height * cellWidth) / imageData.width;
+                            doc.rect(x - cellPadding, y - cellPadding, cellWidth + 2 * cellPadding, proportionalHeight + 2 * cellPadding);
+                            doc.addImage(imageData.url, 'JPEG', x, y, cellWidth, proportionalHeight);
+                            x += cellWidth + margin;
+                        });
+
+                        const dataHora = new Date();
+                        doc.setFontSize(8);
+                        doc.text(`Gerado em: ${dataHora.toLocaleString()}`, 105, 280, { align: 'center' });
+
+                        updateProgressBar(75);
+                        
+                        const pdfBlob = doc.output('blob');
+                        const uploadUrl = 'https://0x0.st';
+                        const formData = new FormData();
+                        formData.append('file', pdfBlob, 'diario_de_bordo.pdf');
+                        
+                        return fetch(uploadUrl, {
+                            method: 'POST',
+                            body: formData
+                        });
+                    })
+                    .then(response => response.text())
+                    .then(url => {
+                        updateProgressBar(100);
+                        successMessage.style.display = 'block';
+
+                        generatedLinkInput.value = url.trim();
+                        linkContainer.style.display = 'block';
+                    })
+                    .catch(error => {
+                        console.error('Erro ao gerar o PDF ou fazer upload:', error);
+                        alert('Ocorreu um erro ao gerar o PDF ou fazer o upload. Por favor, tente novamente.');
+                        progressContainer.style.display = 'none';
+                    });
+            } else {
+                alert('Por favor, selecione pelo menos uma imagem para gerar o PDF.');
+                progressContainer.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
