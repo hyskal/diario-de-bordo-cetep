@@ -1,0 +1,7 @@
+[
+  {
+    "origin": ["https://diario-de-bordo-cetep.web.app"],
+    "method": ["POST"],
+    "maxAgeSeconds": 3600
+  }
+]
