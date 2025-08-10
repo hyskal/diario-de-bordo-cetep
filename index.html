@@ -402,8 +402,8 @@
         const downloadLinkContainer = document.getElementById('download-link-container');
         const downloadButton = document.getElementById('download-button');
 
-        const MAX_IMAGE_WIDTH = 800; // Largura máxima para redimensionamento
-        const JPEG_QUALITY = 0.8; // Qualidade de 0.0 a 1.0 para compressão
+        const MAX_IMAGE_WIDTH = 800;
+        const JPEG_QUALITY = 0.8;
 
         function updateProgressBar(percentage) {
             const roundedPercentage = Math.round(percentage);
@@ -496,11 +496,11 @@
             const doc = new jsPDF();
             const dataHora = new Date();
 
-            doc.setFontSize(12);
-            doc.text(titulo, 105, 15, { align: 'center' });
-            doc.text(`${turma} - Gerado em: ${dataHora.toLocaleString()}`, 105, 25, { align: 'center' });
+            const headerText = `${titulo} - ${turma} - ${email} - Gerado em: ${dataHora.toLocaleString()}`;
+            
             doc.setFontSize(10);
-            doc.text(`E-mail do Responsável: ${email}`, 105, 35, { align: 'center' });
+            const splitText = doc.splitTextToSize(headerText, doc.internal.pageSize.width - 40);
+            doc.text(splitText, 105, 20, { align: 'center' });
 
             const files = [];
             for (let i = 1; i <= 6; i++) {
@@ -521,8 +521,8 @@
 
                 Promise.all(uploadPromises)
                     .then(imageDatas => {
+                        let y = 35;
                         let x = 20; 
-                        let y = 45;
                         const cellWidth = 85; 
                         const cellHeight = 85;
                         const margin = 10;
