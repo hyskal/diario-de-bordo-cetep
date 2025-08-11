@@ -1,6 +1,6 @@
 **Sistema de Envio de Diário de Bordo**
 
-Este projeto é uma aplicação web de página única (SPA) desenvolvida para o CETEP, com o objetivo de simplificar o envio de diários de bordo por parte dos estudantes. O sistema permite que os alunos preencham suas informações, selecionem até seis fotos e, em seguida, gere um arquivo PDF otimizado que é automaticamente enviado para o Firebase Storage.
+Este projeto é uma aplicação web de página única (SPA) desenvolvida para o CETEP/LNAB, com o objetivo de simplificar o envio das fotos dos diários de bordo por parte dos estudantes. O sistema permite que os alunos preencham suas informações, selecionem até seis fotos e, em seguida, gere um arquivo PDF otimizado que é automaticamente enviado para o Firebase Storage.
 
 ## Visão Geral do Sistema
 
