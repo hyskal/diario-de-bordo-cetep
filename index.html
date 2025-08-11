@@ -67,20 +67,25 @@
             margin-bottom: 24px;
         }
 
-        header .container {
-            background-color: var(--background);
-            border-bottom: 1px solid var(--secondary);
+        .header-flex-container {
+            display: flex;
+            align-items: center;
+            gap: 24px;
             padding: 24px;
-            text-align: center;
+            border-bottom: 1px solid var(--secondary);
             margin: 0 auto;
+            width: 90%;
+            max-width: 800px;
         }
-        
+
         .header-logo {
-            max-width: 150px;
-            margin-bottom: 10px;
-            display: block;
-            margin-left: auto;
-            margin-right: auto;
+            max-width: 100px;
+            flex-shrink: 0;
+        }
+
+        .header-text-group {
+            text-align: left;
+            flex-grow: 1;
         }
         
         .header-title {
@@ -88,6 +93,7 @@
             font-weight: 600;
             color: var(--foreground);
             margin-bottom: 8px;
+            margin-top: 0;
         }
 
         .header-title i {
@@ -97,6 +103,7 @@
         .header-subtitle {
             font-size: 14px;
             color: var(--muted-foreground);
+            margin: 0;
         }
 
         .instructions-card {
@@ -337,16 +344,29 @@
             .button {
                 margin-top: 16px;
             }
+            .header-flex-container {
+                flex-direction: column;
+                text-align: center;
+                gap: 16px;
+            }
+            .header-text-group {
+                text-align: center;
+            }
+            .header-logo {
+                max-width: 150px;
+            }
         }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <header>
+        <header class="header-flex-container">
             <img src="/logo-cetep-lnab.png" alt="Logomarca do CETEP" class="header-logo">
-            <h1 class="header-title"><i class="fas fa-book-open"></i>Sistema de Envio das Fotos do Diário de Bordo</h1>
-            <p class="header-subtitle">Organize e compartilhe as atividades acadêmicas com facilidade</p>
+            <div class="header-text-group">
+                <h1 class="header-title"><i class="fas fa-book-open"></i>Sistema de Envio das Fotos do Diário de Bordo</h1>
+                <p class="header-subtitle">Organize e compartilhe as atividades acadêmicas com facilidade</p>
+            </div>
         </header>
 
         <main>
