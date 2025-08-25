@@ -131,7 +131,7 @@ document.getElementById('gerar-pdf').addEventListener('click', function() {
     const dataHora = new Date();
 
     const logoImg = new Image();
-    logoImg.src = 'https://i.ibb.co/JFSDTT6J/logo-cetep-lnab-100kb.png';
+    logoImg.src = '/logo-cetep-lnab.png';
     
     logoImg.onload = function() {
         const pageWidth = doc.internal.pageSize.getWidth();
