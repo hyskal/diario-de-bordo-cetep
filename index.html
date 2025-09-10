@@ -27,17 +27,14 @@
             --border: #e5e7eb;
             --input: #f3f4f6;
             --ring: #93c5fd;
-
             /* Cores acadêmicas */
             --academic-blue: #064097;
             --academic-dark: #052a65;
             --success-green: #22c55e;
-
             /* Configuração de fonte e bordas */
             --font-sans: 'Inter', sans-serif;
             --radius: 0.75rem; /* 12px */
         }
-
         /* Estilos globais */
         body {
             font-family: var(--font-sans);
@@ -50,14 +47,12 @@
             align-items: center;
             min-height: 100vh;
         }
-
         .container {
             width: 90%;
             max-width: 800px;
             padding: 32px;
             box-sizing: border-box;
         }
-
         .card {
             background-color: var(--card);
             border: 1px solid var(--border);
@@ -66,7 +61,6 @@
             padding: 24px;
             margin-bottom: 24px;
         }
-
         .header-flex-container {
             display: flex;
             align-items: center;
@@ -77,12 +71,10 @@
             width: 90%;
             max-width: 800px;
         }
-
         .header-logo {
             max-width: 100px;
             flex-shrink: 0;
         }
-
         .header-text-group {
             text-align: left;
             flex-grow: 1;
@@ -95,17 +87,14 @@
             margin-bottom: 8px;
             margin-top: 0;
         }
-
         .header-title i {
             margin-right: 10px;
         }
-
         .header-subtitle {
             font-size: 14px;
             color: var(--muted-foreground);
             margin: 0;
         }
-
         .instructions-card {
             background-color: #eef7ff;
             border-color: #d1e5f8;
@@ -114,22 +103,18 @@
             align-items: flex-start;
             gap: 12px;
         }
-
         .instructions-card i {
             color: var(--academic-blue);
             margin-top: 4px;
         }
-
         .instructions-card h3 {
             font-weight: 500;
             margin-bottom: 4px;
         }
-
         .instructions-card p {
             font-size: 14px;
             color: #4b5563;
         }
-
         .form-card h2 {
             font-size: 18px;
             font-weight: 600;
@@ -139,7 +124,6 @@
             align-items: center;
             gap: 12px;
         }
-
         .form-group {
             display: flex;
             flex-direction: column;
@@ -155,7 +139,6 @@
         .form-group-flex label {
             margin-right: auto;
         }
-
         .form-group label {
             font-size: 14px;
             font-weight: 500;
@@ -189,7 +172,6 @@
         .remove-student-btn:hover {
             background-color: #c81d1d;
         }
-
         .input-field {
             width: 100%;
             padding: 10px 16px;
@@ -201,13 +183,11 @@
             transition: border-color 0.2s ease, box-shadow 0.2s ease;
             box-sizing: border-box;
         }
-
         .input-field:focus {
             outline: none;
             border-color: var(--primary);
             box-shadow: 0 0 0 2px rgba(0, 121, 242, 0.2);
         }
-
         .file-input-container {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -225,11 +205,9 @@
             transition: border-color 0.2s ease;
             cursor: pointer;
         }
-
         .file-input-wrapper:hover {
             border-color: var(--primary);
         }
-
         .file-input-wrapper input[type="file"] {
             position: absolute;
             top: 0;
@@ -239,14 +217,12 @@
             opacity: 0;
             cursor: pointer;
         }
-
         .file-status {
             font-size: 12px;
             color: var(--success-green);
             display: none;
             margin-top: 4px;
         }
-
         .button {
             width: 100%;
             padding: 12px;
@@ -260,11 +236,9 @@
             transition: background-color 0.2s ease;
             margin-top: 24px;
         }
-
         .button:hover {
             background-color: var(--academic-dark);
         }
-
         .progress-container {
             width: 100%;
             height: 25px;
@@ -274,7 +248,6 @@
             overflow: hidden;
             display: none;
         }
-
         .progress-bar {
             height: 100%;
             background-color: var(--success-green);
@@ -287,7 +260,6 @@
             transition: width 0.4s ease;
             width: 0%;
         }
-
         .success-message {
             margin-top: 16px;
             text-align: center;
@@ -301,7 +273,6 @@
             text-align: center;
             display: none;
         }
-
         #download-button {
             width: 100%;
             padding: 12px;
@@ -317,7 +288,6 @@
             text-decoration: none;
             display: inline-block;
         }
-
         #download-button:hover {
             background-color: var(--academic-dark);
         }
@@ -328,7 +298,6 @@
             color: var(--muted-foreground);
             margin-top: 64px;
         }
-
         /* --- Media Query para telas menores --- */
         @media (max-width: 600px) {
             .container {
@@ -359,7 +328,6 @@
     </style>
 </head>
 <body>
-
     <div class="container">
         <header class="header-flex-container">
             <img src="/logo-cetep-lnab.png" alt="Logomarca do CETEP" class="header-logo">
@@ -368,7 +336,6 @@
                 <p class="header-subtitle">Organize e compartilhe as atividades acadêmicas com facilidade</p>
             </div>
         </header>
-
         <main>
             <div class="card instructions-card">
                 <i class="fas fa-info-circle fa-lg"></i>
@@ -377,7 +344,6 @@
                     <p class="text-sm">Preencha os dados do estudante e selecione até 6 fotos para incluir no diário de bordo. O sistema gerará automaticamente um PDF formatado.</p>
                 </div>
             </div>
-
             <div class="card form-card">
                 <h2><i class="fas fa-user-graduate"></i>Informações do Estudante</h2>
                 <div class="form-group" id="student-names-group">
@@ -398,7 +364,6 @@
                     <label for="email">E-mail do Responsável</label>
                     <input type="email" id="email" class="input-field" placeholder="exemplo@email.com">
                 </div>
-
                 <div class="file-input-container">
                     <div class="file-input-wrapper">
                         <input type="file" class="file-input" id="foto1" accept="image/*">
@@ -431,16 +396,13 @@
                         <div id="status-foto6" class="file-status"><i class="fas fa-check-circle"></i> Arquivo selecionado</div>
                     </div>
                 </div>
-
                 <button class="button" id="gerar-pdf">Gerar PDF e Fazer Upload</button>
-
                 <div id="progress-container" class="progress-container">
                     <div id="progress-bar" class="progress-bar">0%</div>
                 </div>
                 <div id="success-message" class="success-message">
                     <i class="fas fa-check-circle"></i> PDF gerado e enviado com sucesso!
                 </div>
-
                 <div id="download-link-container" class="link-container">
                     <a id="download-button" class="button" style="text-align: center; padding: 12px; font-size: 16px; margin-top: 0;" href="#" target="_blank">
                         <i class="fas fa-file-download"></i> Seu arquivo está pronto, clique para baixar
@@ -454,10 +416,12 @@
             <p class="mt-2">Desenvolvido para facilitar o compartilhamento de atividades acadêmicas.</p>
         </footer>
     </div>
+    
+    <!-- SCRIPTS -->
     <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/compressorjs@1.2.1/dist/compressor.min.js"></script>
+    <!-- REMOVIDO: Compressor.js não é mais necessário -->
     <script>
         // Configurações do seu projeto Firebase
         var firebaseConfig = {
