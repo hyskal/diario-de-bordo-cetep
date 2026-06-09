@@ -250,20 +250,23 @@ document.getElementById('gerar-pdf').addEventListener('click', function() {
                     const pdfFileName = `${dataFormatada}-${turmaSanitizada}-${tituloSanitizado}.pdf`;
 
                     // Upload paralelo para SML Storage (fire-and-forget)
+                    console.log('[SML] iniciando conversão base64, tamanho do blob:', pdfBlob.size);
                     pdfBlob.arrayBuffer().then(buffer => {
+                        console.log('[SML] buffer obtido, convertendo para base64...');
                         const bytes = new Uint8Array(buffer);
                         let binary = '';
                         for (let i = 0; i < bytes.byteLength; i++) binary += String.fromCharCode(bytes[i]);
                         const base64 = btoa(binary);
+                        console.log('[SML] base64 gerado, enviando para função proxy...');
                         fetch('https://us-central1-diario-de-bordo-cetep.cloudfunctions.net/smlUpload', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({ filename: pdfFileName, turma, aluno: titulo, fileBase64: base64 })
                         })
-                        .then(r => r.json())
-                        .then(d => console.log('[SML]', d.success ? d.url : d.error))
-                        .catch(e => console.warn('[SML] falhou silenciosamente:', e));
-                    });
+                        .then(r => { console.log('[SML] resposta HTTP:', r.status); return r.json(); })
+                        .then(d => console.log('[SML] resultado:', d.success ? '✅ ' + d.url : '❌ ' + d.error))
+                        .catch(e => console.warn('[SML] erro:', e));
+                    }).catch(e => console.warn('[SML] erro ao ler buffer:', e));
 
                     const storageRef = storage.ref(`diarios/${pdfFileName}`);
                     const uploadTask = storageRef.put(pdfBlob);
