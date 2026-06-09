@@ -71,6 +71,17 @@
             width: 90%;
             max-width: 800px;
         }
+        .header-left-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+        .header-book-svg {
+            width: 160px;
+            height: auto;
+        }
         .header-logo {
             max-width: 100px;
             flex-shrink: 0;
@@ -324,13 +335,52 @@
             .header-logo {
                 max-width: 150px;
             }
+            .header-book-svg {
+                width: 200px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <header class="header-flex-container">
-            <img src="/logo-cetep-lnab.png" alt="Logomarca do CETEP" class="header-logo">
+            <div class="header-left-group">
+                <svg class="header-book-svg" viewBox="0 0 520 260" xmlns="http://www.w3.org/2000/svg">
+                  <defs>
+                    <linearGradient id="cover" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stop-color="#1E4FA8"/>
+                      <stop offset="100%" stop-color="#0B2E6D"/>
+                    </linearGradient>
+                    <filter id="shadow">
+                      <feDropShadow dx="0" dy="5" stdDeviation="8" flood-opacity="0.25"/>
+                    </filter>
+                  </defs>
+                  <!-- Tubo amarelo -->
+                  <g transform="translate(120 130) rotate(-20)">
+                    <rect width="38" height="100" rx="18" fill="#24344D" stroke="#5CC3FF" stroke-width="2"/>
+                    <rect width="38" height="18" rx="6" fill="#FFD43B"/>
+                  </g>
+                  <!-- Tubo roxo -->
+                  <g transform="translate(360 120) rotate(20)">
+                    <rect width="38" height="100" rx="18" fill="#24344D" stroke="#5CC3FF" stroke-width="2"/>
+                    <rect width="38" height="18" rx="6" fill="#9B5DE5"/>
+                  </g>
+                  <!-- Livro -->
+                  <g filter="url(#shadow)">
+                    <rect x="170" y="45" width="190" height="150" rx="12" fill="#08234F"/>
+                    <rect x="160" y="35" width="190" height="150" rx="12" fill="url(#cover)"/>
+                    <rect x="160" y="35" width="22" height="150" fill="#071F49"/>
+                    <line x1="175" y1="55" x2="175" y2="165" stroke="#5CC3FF" stroke-width="1.5" opacity="0.5"/>
+                  </g>
+                  <!-- título -->
+                  <text x="255" y="85" text-anchor="middle" fill="#FFFFFF" font-family="Segoe UI" font-size="18" font-weight="700">DIÁRIO</text>
+                  <text x="255" y="145" text-anchor="middle" fill="#FFFFFF" font-family="Segoe UI" font-size="18" font-weight="700">DE BORDO</text>
+                  <!-- símbolo -->
+                  <circle cx="255" cy="112" r="16" fill="#34D399"/>
+                  <path d="M248 112 L254 118 L264 105" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <img src="/logo-cetep-lnab.png" alt="Logomarca do CETEP" class="header-logo">
+            </div>
             <div class="header-text-group">
                 <h1 class="header-title"><i class="fas fa-book-open"></i>Sistema de Envio das Fotos do Diário de Bordo</h1>
                 <p class="header-subtitle">Organize e compartilhe as atividades acadêmicas com facilidade</p>
