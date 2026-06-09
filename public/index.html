@@ -199,40 +199,67 @@
             border-color: var(--primary);
             box-shadow: 0 0 0 2px rgba(0, 121, 242, 0.2);
         }
-        .file-input-container {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 16px;
-            margin-top: 24px;
-        }
-        
-        .file-input-wrapper {
+        .drop-zone {
             position: relative;
-            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 24px;
+            padding: 40px 24px;
             background-color: var(--input);
             border: 2px dashed var(--border);
             border-radius: var(--radius);
-            padding: 20px;
-            transition: border-color 0.2s ease;
             cursor: pointer;
+            transition: border-color 0.2s ease, background-color 0.2s ease;
+            text-align: center;
         }
-        .file-input-wrapper:hover {
+        .drop-zone:hover, .drop-zone.dragover {
             border-color: var(--primary);
+            background-color: #eef5ff;
         }
-        .file-input-wrapper input[type="file"] {
+        .drop-zone input[type="file"] {
             position: absolute;
-            top: 0;
-            left: 0;
+            inset: 0;
             width: 100%;
             height: 100%;
             opacity: 0;
             cursor: pointer;
         }
-        .file-status {
-            font-size: 12px;
-            color: var(--success-green);
-            display: none;
+        .drop-zone-icon {
+            font-size: 40px;
+            color: var(--primary);
+            line-height: 1;
+        }
+        .drop-zone-text {
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--foreground);
+        }
+        .drop-zone-hint {
+            font-size: 13px;
+            color: var(--muted-foreground);
+        }
+        .drop-zone-preview {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
             margin-top: 4px;
+        }
+        .drop-zone-preview img {
+            width: 72px;
+            height: 72px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 2px solid var(--border);
+        }
+        .drop-zone-count {
+            font-size: 13px;
+            color: var(--success-green);
+            font-weight: 500;
+            display: none;
         }
         .button {
             width: 100%;
@@ -414,37 +441,13 @@
                     <label for="email">E-mail do Responsável</label>
                     <input type="email" id="email" class="input-field" placeholder="exemplo@email.com">
                 </div>
-                <div class="file-input-container">
-                    <div class="file-input-wrapper">
-                        <input type="file" class="file-input" id="foto1" accept="image/*">
-                        <span>Selecione a Foto 1</span>
-                        <div id="status-foto1" class="file-status"><i class="fas fa-check-circle"></i> Arquivo selecionado</div>
-                    </div>
-                    <div class="file-input-wrapper">
-                        <input type="file" class="file-input" id="foto2" accept="image/*">
-                        <span>Selecione a Foto 2</span>
-                        <div id="status-foto2" class="file-status"><i class="fas fa-check-circle"></i> Arquivo selecionado</div>
-                    </div>
-                    <div class="file-input-wrapper">
-                        <input type="file" class="file-input" id="foto3" accept="image/*">
-                        <span>Selecione a Foto 3</span>
-                        <div id="status-foto3" class="file-status"><i class="fas fa-check-circle"></i> Arquivo selecionado</div>
-                    </div>
-                    <div class="file-input-wrapper">
-                        <input type="file" class="file-input" id="foto4" accept="image/*">
-                        <span>Selecione a Foto 4</span>
-                        <div id="status-foto4" class="file-status"><i class="fas fa-check-circle"></i> Arquivo selecionado</div>
-                    </div>
-                    <div class="file-input-wrapper">
-                        <input type="file" class="file-input" id="foto5" accept="image/*">
-                        <span>Selecione a Foto 5</span>
-                        <div id="status-foto5" class="file-status"><i class="fas fa-check-circle"></i> Arquivo selecionado</div>
-                    </div>
-                    <div class="file-input-wrapper">
-                        <input type="file" class="file-input" id="foto6" accept="image/*">
-                        <span>Selecione a Foto 6</span>
-                        <div id="status-foto6" class="file-status"><i class="fas fa-check-circle"></i> Arquivo selecionado</div>
-                    </div>
+                <div class="drop-zone" id="drop-zone">
+                    <input type="file" id="fotos" accept="image/*" multiple>
+                    <div class="drop-zone-icon"><i class="fas fa-images"></i></div>
+                    <div class="drop-zone-text">Clique ou arraste as fotos aqui</div>
+                    <div class="drop-zone-hint">Selecione até 6 imagens (JPG, PNG, etc.)</div>
+                    <div class="drop-zone-count" id="drop-zone-count"></div>
+                    <div class="drop-zone-preview" id="drop-zone-preview"></div>
                 </div>
                 <button class="button" id="gerar-pdf">Gerar PDF e Fazer Upload</button>
                 <div id="progress-container" class="progress-container">

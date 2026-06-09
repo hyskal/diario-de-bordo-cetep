@@ -62,22 +62,39 @@ function compressImageLocally(file) {
     });
 }
 
-function showFileStatus(fileInputId, statusId) {
-    const fileInput = document.getElementById(fileInputId);
-    const statusDiv = document.getElementById(statusId);
-    if (fileInput.files.length > 0) {
-        statusDiv.style.display = 'block';
+const dropZone = document.getElementById('drop-zone');
+const fotosInput = document.getElementById('fotos');
+const dropZoneCount = document.getElementById('drop-zone-count');
+const dropZonePreview = document.getElementById('drop-zone-preview');
+
+let selectedFiles = [];
+
+function updateDropZone(files) {
+    selectedFiles = Array.from(files).slice(0, 6);
+    dropZonePreview.innerHTML = '';
+    if (selectedFiles.length > 0) {
+        dropZoneCount.textContent = `${selectedFiles.length} foto${selectedFiles.length > 1 ? 's' : ''} selecionada${selectedFiles.length > 1 ? 's' : ''}`;
+        dropZoneCount.style.display = 'block';
+        selectedFiles.forEach(file => {
+            const img = document.createElement('img');
+            img.src = URL.createObjectURL(file);
+            dropZonePreview.appendChild(img);
+        });
     } else {
-        statusDiv.style.display = 'none';
+        dropZoneCount.style.display = 'none';
     }
 }
 
-document.querySelectorAll('.file-input').forEach(input => {
-    input.addEventListener('change', function() {
-        const id = this.id;
-        const statusId = 'status-' + id;
-        showFileStatus(id, statusId);
-    });
+fotosInput.addEventListener('change', function() {
+    updateDropZone(this.files);
+});
+
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragover'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+dropZone.addEventListener('drop', e => {
+    e.preventDefault();
+    dropZone.classList.remove('dragover');
+    updateDropZone(e.dataTransfer.files);
 });
 
 addStudentBtn.addEventListener('click', () => {
@@ -152,13 +169,7 @@ document.getElementById('gerar-pdf').addEventListener('click', function() {
         const splitText = doc.splitTextToSize(headerText, textWidth);
         doc.text(splitText, headerTextX, headerTextY, { align: 'left' });
         
-        const files = [];
-        for (let i = 1; i <= 6; i++) {
-            const fotoInput = document.getElementById('foto' + i);
-            if (fotoInput.files.length > 0) {
-                files.push(fotoInput.files[0]);
-            }
-        }
+        const files = selectedFiles.slice(0, 6);
         
         if (files.length > 0) {
             let processedCount = 0;
