@@ -33,7 +33,7 @@ exports.smlUpload = onRequest(
         });
       }
       try {
-        const {filename, turma, aluno, fileBase64} = req.body;
+        const {filename, turma, aluno, email, fileBase64} = req.body;
         if (!filename) {
           return res.status(400).json({
             success: false,
@@ -51,9 +51,9 @@ exports.smlUpload = onRequest(
           body: JSON.stringify({
             projeto: "cetep",
             filename,
-            tag1: turma || "",
-            tag2: aluno || "",
-            tag3: "",
+            tag1: aluno || "",
+            tag2: turma || "",
+            tag3: email || "",
           }),
         });
         const urlData = await urlRes.json();

@@ -258,7 +258,7 @@ document.getElementById('gerar-pdf').addEventListener('click', function() {
                         fetch('https://us-central1-diario-de-bordo-cetep.cloudfunctions.net/smlUpload', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ filename: pdfFileName, turma, aluno: titulo, fileBase64: base64 })
+                            body: JSON.stringify({ filename: pdfFileName, turma, aluno: titulo, email, fileBase64: base64 })
                         })
                         .then(r => r.json())
                         .then(d => { if (!d.success) console.warn('[SML]', d.error); })
