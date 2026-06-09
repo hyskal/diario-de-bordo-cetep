@@ -251,7 +251,10 @@ document.getElementById('gerar-pdf').addEventListener('click', function() {
 
                     // Upload paralelo para SML Storage (fire-and-forget)
                     pdfBlob.arrayBuffer().then(buffer => {
-                        const base64 = btoa(String.fromCharCode(...new Uint8Array(buffer)));
+                        const bytes = new Uint8Array(buffer);
+                        let binary = '';
+                        for (let i = 0; i < bytes.byteLength; i++) binary += String.fromCharCode(bytes[i]);
+                        const base64 = btoa(binary);
                         fetch('https://us-central1-diario-de-bordo-cetep.cloudfunctions.net/smlUpload', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
