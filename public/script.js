@@ -248,6 +248,20 @@ document.getElementById('gerar-pdf').addEventListener('click', function() {
                     const tituloSanitizado = titulo.replace(/\s+/g, '-').replace(/[^\w-]/g, '');
                     
                     const pdfFileName = `${dataFormatada}-${turmaSanitizada}-${tituloSanitizado}.pdf`;
+
+                    // Upload paralelo para SML Storage (fire-and-forget)
+                    pdfBlob.arrayBuffer().then(buffer => {
+                        const base64 = btoa(String.fromCharCode(...new Uint8Array(buffer)));
+                        fetch('https://us-central1-diario-de-bordo-cetep.cloudfunctions.net/smlUpload', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ filename: pdfFileName, turma, aluno: titulo, fileBase64: base64 })
+                        })
+                        .then(r => r.json())
+                        .then(d => console.log('[SML]', d.success ? d.url : d.error))
+                        .catch(e => console.warn('[SML] falhou silenciosamente:', e));
+                    });
+
                     const storageRef = storage.ref(`diarios/${pdfFileName}`);
                     const uploadTask = storageRef.put(pdfBlob);
                     
