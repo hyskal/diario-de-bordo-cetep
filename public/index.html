@@ -1,89 +1,491 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Welcome to Firebase Hosting</title>
-
-    <!-- update the version number as needed -->
-    <script defer src="/__/firebase/12.1.0/firebase-app-compat.js"></script>
-    <!-- include only the Firebase features as you need -->
-    <script defer src="/__/firebase/12.1.0/firebase-auth-compat.js"></script>
-    <script defer src="/__/firebase/12.1.0/firebase-database-compat.js"></script>
-    <script defer src="/__/firebase/12.1.0/firebase-firestore-compat.js"></script>
-    <script defer src="/__/firebase/12.1.0/firebase-functions-compat.js"></script>
-    <script defer src="/__/firebase/12.1.0/firebase-messaging-compat.js"></script>
-    <script defer src="/__/firebase/12.1.0/firebase-storage-compat.js"></script>
-    <script defer src="/__/firebase/12.1.0/firebase-analytics-compat.js"></script>
-    <script defer src="/__/firebase/12.1.0/firebase-remote-config-compat.js"></script>
-    <script defer src="/__/firebase/12.1.0/firebase-performance-compat.js"></script>
-    <!-- 
-      initialize the SDK after all desired features are loaded, set useEmulator to false
-      to avoid connecting the SDK to running emulators.
-    -->
-    <script defer src="/__/firebase/init.js?useEmulator=true"></script>
-
-    <style media="screen">
-      body { background: #ECEFF1; color: rgba(0,0,0,0.87); font-family: Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; }
-      #message { background: white; max-width: 360px; margin: 100px auto 16px; padding: 32px 24px; border-radius: 3px; }
-      #message h2 { color: #ffa100; font-weight: bold; font-size: 16px; margin: 0 0 8px; }
-      #message h1 { font-size: 22px; font-weight: 300; color: rgba(0,0,0,0.6); margin: 0 0 16px;}
-      #message p { line-height: 140%; margin: 16px 0 24px; font-size: 14px; }
-      #message a { display: block; text-align: center; background: #039be5; text-transform: uppercase; text-decoration: none; color: white; padding: 16px; border-radius: 4px; }
-      #message, #message a { box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); }
-      #load { color: rgba(0,0,0,0.4); text-align: center; font-size: 13px; }
-      @media (max-width: 600px) {
-        body, #message { margin-top: 0; background: white; box-shadow: none; }
-        body { border-top: 16px solid #ffa100; }
-      }
-    </style>
-  </head>
-  <body>
-    <div id="message">
-      <h2>Welcome</h2>
-      <h1>Firebase Hosting Setup Complete</h1>
-      <p>You're seeing this because you've successfully setup Firebase Hosting. Now it's time to go build something extraordinary!</p>
-      <a target="_blank" href="https://firebase.google.com/docs/hosting/">Open Hosting Documentation</a>
-    </div>
-    <p id="load">Firebase SDK Loading&hellip;</p>
-
-    <script>
-      document.addEventListener('DOMContentLoaded', function() {
-        const loadEl = document.querySelector('#load');
-        // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
-        // // The Firebase SDK is initialized and available here!
-        //
-        // firebase.auth().onAuthStateChanged(user => { });
-        // firebase.database().ref('/path/to/ref').on('value', snapshot => { });
-        // firebase.firestore().doc('/foo/bar').get().then(() => { });
-        // firebase.functions().httpsCallable('yourFunction')().then(() => { });
-        // firebase.messaging().requestPermission().then(() => { });
-        // firebase.storage().ref('/path/to/ref').getDownloadURL().then(() => { });
-        // firebase.analytics(); // call to activate
-        // firebase.analytics().logEvent('tutorial_completed');
-        // firebase.performance(); // call to activate
-        //
-        // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
-
-        try {
-          let app = firebase.app();
-          let features = [
-            'auth', 
-            'database', 
-            'firestore',
-            'functions',
-            'messaging', 
-            'storage', 
-            'analytics', 
-            'remoteConfig',
-            'performance',
-          ].filter(feature => typeof app[feature] === 'function');
-          loadEl.textContent = `Firebase SDK loaded with ${features.join(', ')}`;
-        } catch (e) {
-          console.error(e);
-          loadEl.textContent = 'Error loading the Firebase SDK, check the console.';
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Envio das Fotos do Diário de Bordo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            /* Cores base para o tema */
+            --background: #fff;
+            --foreground: #111827; /* cinza escuro */
+            --card: #f9fafb; /* cinza claro */
+            --card-foreground: #111827;
+            --primary: #0079F2; /* azul principal */
+            --primary-foreground: #fff;
+            --secondary: #e5e7eb; /* cinza secundário */
+            --secondary-foreground: #111827;
+            --muted-foreground: #6b7280;
+            --accent: #2c323f; /* acento para o dark */
+            --accent-foreground: #fff;
+            --destructive: #ef4444; /* vermelho para erros */
+            --destructive-foreground: #fff;
+            --border: #e5e7eb;
+            --input: #f3f4f6;
+            --ring: #93c5fd;
+            /* Cores acadêmicas */
+            --academic-blue: #064097;
+            --academic-dark: #052a65;
+            --success-green: #22c55e;
+            /* Configuração de fonte e bordas */
+            --font-sans: 'Inter', sans-serif;
+            --radius: 0.75rem; /* 12px */
         }
-      });
+        /* Estilos globais */
+        body {
+            font-family: var(--font-sans);
+            background-color: var(--background);
+            color: var(--foreground);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            width: 90%;
+            max-width: 800px;
+            padding: 32px;
+            box-sizing: border-box;
+        }
+        .card {
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+        .header-flex-container {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            padding: 24px;
+            border-bottom: 1px solid var(--secondary);
+            margin: 0 auto;
+            width: 90%;
+            max-width: 800px;
+        }
+        .header-left-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+        .header-book-svg {
+            width: 160px;
+            height: auto;
+        }
+        .header-logo {
+            max-width: 100px;
+            flex-shrink: 0;
+        }
+        .header-text-group {
+            text-align: left;
+            flex-grow: 1;
+        }
+        
+        .header-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--foreground);
+            margin-bottom: 8px;
+            margin-top: 0;
+        }
+        .header-title i {
+            margin-right: 10px;
+        }
+        .header-subtitle {
+            font-size: 14px;
+            color: var(--muted-foreground);
+            margin: 0;
+        }
+        .instructions-card {
+            background-color: #eef7ff;
+            border-color: #d1e5f8;
+            color: var(--academic-dark);
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+        .instructions-card i {
+            color: var(--academic-blue);
+            margin-top: 4px;
+        }
+        .instructions-card h3 {
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+        .instructions-card p {
+            font-size: 14px;
+            color: #4b5563;
+        }
+        .form-card h2 {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--foreground);
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .form-group-flex {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .form-group-flex label {
+            margin-right: auto;
+        }
+        .form-group label {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--foreground);
+        }
+        
+        .add-student-btn, .remove-student-btn {
+            background-color: var(--primary);
+            color: var(--primary-foreground);
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            line-height: 1;
+            transition: background-color 0.2s ease;
+            margin-left: 8px;
+        }
+        
+        .remove-student-btn {
+            background-color: var(--destructive);
+            display: none;
+        }
+        
+        .add-student-btn:hover {
+            background-color: var(--academic-dark);
+        }
+        
+        .remove-student-btn:hover {
+            background-color: #c81d1d;
+        }
+        .input-field {
+            width: 100%;
+            padding: 10px 16px;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            background-color: var(--input);
+            color: var(--foreground);
+            font-size: 16px;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+            box-sizing: border-box;
+        }
+        .input-field:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(0, 121, 242, 0.2);
+        }
+        .file-input-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-top: 24px;
+        }
+        
+        .file-input-wrapper {
+            position: relative;
+            text-align: center;
+            background-color: var(--input);
+            border: 2px dashed var(--border);
+            border-radius: var(--radius);
+            padding: 20px;
+            transition: border-color 0.2s ease;
+            cursor: pointer;
+        }
+        .file-input-wrapper:hover {
+            border-color: var(--primary);
+        }
+        .file-input-wrapper input[type="file"] {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+        .file-status {
+            font-size: 12px;
+            color: var(--success-green);
+            display: none;
+            margin-top: 4px;
+        }
+        .button {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--primary);
+            color: var(--primary-foreground);
+            border: none;
+            border-radius: var(--radius);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            margin-top: 24px;
+        }
+        .button:hover {
+            background-color: var(--academic-dark);
+        }
+        .progress-container {
+            width: 100%;
+            height: 25px;
+            background-color: var(--secondary);
+            border-radius: var(--radius);
+            margin-top: 16px;
+            overflow: hidden;
+            display: none;
+        }
+        .progress-bar {
+            height: 100%;
+            background-color: var(--success-green);
+            color: var(--primary-foreground);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 500;
+            transition: width 0.4s ease;
+            width: 0%;
+        }
+        .success-message {
+            margin-top: 16px;
+            text-align: center;
+            font-size: 16px;
+            color: var(--success-green);
+            display: none;
+        }
+        
+        .link-container {
+            margin-top: 16px;
+            text-align: center;
+            display: none;
+        }
+        #download-button {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--primary);
+            color: var(--primary-foreground);
+            border: none;
+            border-radius: var(--radius);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            margin-top: 0;
+            text-decoration: none;
+            display: inline-block;
+        }
+        #download-button:hover {
+            background-color: var(--academic-dark);
+        }
+        
+        footer {
+            text-align: center;
+            font-size: 12px;
+            color: var(--muted-foreground);
+            margin-top: 64px;
+        }
+        /* --- Media Query para telas menores --- */
+        @media (max-width: 600px) {
+            .container {
+                padding: 16px;
+            }
+            .file-input-container {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+            .file-input-wrapper {
+                padding: 16px;
+            }
+            .button {
+                margin-top: 16px;
+            }
+            .header-flex-container {
+                flex-direction: column;
+                text-align: center;
+                gap: 16px;
+            }
+            .header-text-group {
+                text-align: center;
+            }
+            .header-logo {
+                max-width: 150px;
+            }
+            .header-book-svg {
+                width: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header-flex-container">
+            <div class="header-left-group">
+                <svg class="header-book-svg" viewBox="0 0 520 260" xmlns="http://www.w3.org/2000/svg">
+                  <defs>
+                    <linearGradient id="cover" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stop-color="#1E4FA8"/>
+                      <stop offset="100%" stop-color="#0B2E6D"/>
+                    </linearGradient>
+                    <filter id="shadow">
+                      <feDropShadow dx="0" dy="5" stdDeviation="8" flood-opacity="0.25"/>
+                    </filter>
+                  </defs>
+                  <!-- Tubo amarelo -->
+                  <g transform="translate(120 130) rotate(-20)">
+                    <rect width="38" height="100" rx="18" fill="#24344D" stroke="#5CC3FF" stroke-width="2"/>
+                    <rect width="38" height="18" rx="6" fill="#FFD43B"/>
+                  </g>
+                  <!-- Tubo roxo -->
+                  <g transform="translate(360 120) rotate(20)">
+                    <rect width="38" height="100" rx="18" fill="#24344D" stroke="#5CC3FF" stroke-width="2"/>
+                    <rect width="38" height="18" rx="6" fill="#9B5DE5"/>
+                  </g>
+                  <!-- Livro -->
+                  <g filter="url(#shadow)">
+                    <rect x="170" y="45" width="190" height="150" rx="12" fill="#08234F"/>
+                    <rect x="160" y="35" width="190" height="150" rx="12" fill="url(#cover)"/>
+                    <rect x="160" y="35" width="22" height="150" fill="#071F49"/>
+                    <line x1="175" y1="55" x2="175" y2="165" stroke="#5CC3FF" stroke-width="1.5" opacity="0.5"/>
+                  </g>
+                  <!-- título -->
+                  <text x="255" y="85" text-anchor="middle" fill="#FFFFFF" font-family="Segoe UI" font-size="18" font-weight="700">DIÁRIO</text>
+                  <text x="255" y="145" text-anchor="middle" fill="#FFFFFF" font-family="Segoe UI" font-size="18" font-weight="700">DE BORDO</text>
+                  <!-- símbolo -->
+                  <circle cx="255" cy="112" r="16" fill="#34D399"/>
+                  <path d="M248 112 L254 118 L264 105" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <img src="/logo-cetep-lnab.png" alt="Logomarca do CETEP" class="header-logo">
+            </div>
+            <div class="header-text-group">
+                <h1 class="header-title"><i class="fas fa-book-open"></i>Sistema de Envio das Fotos do Diário de Bordo</h1>
+                <p class="header-subtitle">Organize e compartilhe as atividades acadêmicas com facilidade</p>
+            </div>
+        </header>
+        <main>
+            <div class="card instructions-card">
+                <i class="fas fa-info-circle fa-lg"></i>
+                <div>
+                    <h3 class="font-medium">Instruções</h3>
+                    <p class="text-sm">Preencha os dados do estudante e selecione até 6 fotos para incluir no diário de bordo. O sistema gerará automaticamente um PDF formatado.</p>
+                </div>
+            </div>
+            <div class="card form-card">
+                <h2><i class="fas fa-user-graduate"></i>Informações do Estudante</h2>
+                <div class="form-group" id="student-names-group">
+                    <div class="form-group-flex">
+                        <label for="titulo">Nome do(s) estudante(s)</label>
+                        <div>
+                            <button type="button" class="remove-student-btn" id="remove-student-btn">-</button>
+                            <button type="button" class="add-student-btn" id="add-student-btn">+</button>
+                        </div>
+                    </div>
+                    <input type="text" id="titulo" class="input-field student-name-input" placeholder="Digite o nome completo do estudante">
+                </div>
+                <div class="form-group">
+                    <label for="turma">Turma</label>
+                    <input type="text" id="turma" class="input-field" placeholder="Ex: 3TACM1">
+                </div>
+                <div class="form-group">
+                    <label for="email">E-mail do Responsável</label>
+                    <input type="email" id="email" class="input-field" placeholder="exemplo@email.com">
+                </div>
+                <div class="file-input-container">
+                    <div class="file-input-wrapper">
+                        <input type="file" class="file-input" id="foto1" accept="image/*">
+                        <span>Selecione a Foto 1</span>
+                        <div id="status-foto1" class="file-status"><i class="fas fa-check-circle"></i> Arquivo selecionado</div>
+                    </div>
+                    <div class="file-input-wrapper">
+                        <input type="file" class="file-input" id="foto2" accept="image/*">
+                        <span>Selecione a Foto 2</span>
+                        <div id="status-foto2" class="file-status"><i class="fas fa-check-circle"></i> Arquivo selecionado</div>
+                    </div>
+                    <div class="file-input-wrapper">
+                        <input type="file" class="file-input" id="foto3" accept="image/*">
+                        <span>Selecione a Foto 3</span>
+                        <div id="status-foto3" class="file-status"><i class="fas fa-check-circle"></i> Arquivo selecionado</div>
+                    </div>
+                    <div class="file-input-wrapper">
+                        <input type="file" class="file-input" id="foto4" accept="image/*">
+                        <span>Selecione a Foto 4</span>
+                        <div id="status-foto4" class="file-status"><i class="fas fa-check-circle"></i> Arquivo selecionado</div>
+                    </div>
+                    <div class="file-input-wrapper">
+                        <input type="file" class="file-input" id="foto5" accept="image/*">
+                        <span>Selecione a Foto 5</span>
+                        <div id="status-foto5" class="file-status"><i class="fas fa-check-circle"></i> Arquivo selecionado</div>
+                    </div>
+                    <div class="file-input-wrapper">
+                        <input type="file" class="file-input" id="foto6" accept="image/*">
+                        <span>Selecione a Foto 6</span>
+                        <div id="status-foto6" class="file-status"><i class="fas fa-check-circle"></i> Arquivo selecionado</div>
+                    </div>
+                </div>
+                <button class="button" id="gerar-pdf">Gerar PDF e Fazer Upload</button>
+                <div id="progress-container" class="progress-container">
+                    <div id="progress-bar" class="progress-bar">0%</div>
+                </div>
+                <div id="success-message" class="success-message">
+                    <i class="fas fa-check-circle"></i> PDF gerado e enviado com sucesso!
+                </div>
+                <div id="download-link-container" class="link-container">
+                    <a id="download-button" class="button" style="text-align: center; padding: 12px; font-size: 16px; margin-top: 0;" href="#" target="_blank">
+                        <i class="fas fa-file-download"></i> Seu arquivo está pronto, clique para baixar
+                    </a>
+                </div>
+            </div>
+        </main>
+        
+        <footer>
+            <p>© 2025 Sistema Diário de Bordo. Todos os direitos reservados.</p>
+            <p class="mt-2">Desenvolvido para facilitar o compartilhamento de atividades acadêmicas.</p>
+        </footer>
+    </div>
+    
+    <!-- SCRIPTS -->
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
+    <!-- REMOVIDO: Compressor.js não é mais necessário -->
+    <script>
+        // Configurações do seu projeto Firebase
+        var firebaseConfig = {
+            apiKey: "AIzaSyD0vFDHBkjGAdTSzY7TtdbDGX-9BUiJEbk",
+            authDomain: "diario-de-bordo-cetep.firebaseapp.com",
+            projectId: "diario-de-bordo-cetep",
+            storageBucket: "diario-de-bordo-cetep.firebasestorage.app",
+            messagingSenderId: "106679083009",
+            appId: "1:106679083009:web:c51bae8358c727f33be000"
+        };
+        // Inicialize o Firebase
+        firebase.initializeApp(firebaseConfig);
+        const storage = firebase.storage();
     </script>
-  </body>
+    <script src="script.js"></script>
+</body>
 </html>
