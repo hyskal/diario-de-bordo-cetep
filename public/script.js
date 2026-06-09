@@ -97,6 +97,16 @@ dropZone.addEventListener('drop', e => {
     updateDropZone(e.dataTransfer.files);
 });
 
+document.getElementById('modal-fechar').addEventListener('click', () => {
+    document.getElementById('modal-confirmacao').classList.remove('active');
+});
+
+document.getElementById('modal-confirmacao').addEventListener('click', (e) => {
+    if (e.target === document.getElementById('modal-confirmacao')) {
+        document.getElementById('modal-confirmacao').classList.remove('active');
+    }
+});
+
 addStudentBtn.addEventListener('click', () => {
     const newInput = document.createElement('input');
     newInput.type = 'text';
@@ -254,11 +264,9 @@ document.getElementById('gerar-pdf').addEventListener('click', function() {
                         () => {
                             uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
                                 updateProgressBar(100);
-                                successMessage.style.display = 'block';
-                                
-                                downloadButton.href = downloadURL;
-                                downloadLinkContainer.style.display = 'block';
-                                alert('Seus arquivos foram enviados para o professor, baixe uma cópia do arquivo se preferir.');
+                                progressContainer.style.display = 'none';
+                                document.getElementById('modal-download-btn').href = downloadURL;
+                                document.getElementById('modal-confirmacao').classList.add('active');
                             });
                         }
                     );
