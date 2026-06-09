@@ -116,6 +116,108 @@ Adicione em: `github.com/<usuario>/<repo>/settings/secrets/actions`
 
 ---
 
+---
+
+## Integração com a SML Storage API — Guia para Agentes de Implementação
+
+Esta seção descreve como o projeto se integra à SML Storage API e o que um agente de IA ou desenvolvedor precisa saber para implementar, estender ou depurar essa integração.
+
+### Visão Geral do Fluxo
+
+```
+Navegador (público)
+  │
+  └─ POST /smlUpload  (Firebase Function — proxy seguro)
+        │
+        ├─ 1) POST /getUploadUrl  →  SML Storage API
+        ├─ 2) PUT {uploadUrl}     →  Google Storage (direto)
+        └─ 3) POST /confirmUpload →  SML Storage API
+```
+
+A chave de API nunca chega ao navegador — fica no Secret Manager do projeto Firebase.
+
+### Contrato de Dados enviados pelo Frontend
+
+O frontend chama a função proxy via `fetch` com o seguinte payload:
+
+```json
+{
+  "filename":    "09062026-3TACM1-Lucas-Batista.pdf",
+  "aluno":       "Lucas Batista, João Silva",
+  "turma":       "3TACM1",
+  "email":       "professor@escola.com",
+  "fileBase64":  "<PDF codificado em base64>"
+}
+```
+
+### Mapeamento para as Tags da SML Storage API
+
+| Campo enviado | Tag SML | Exemplo |
+|---|---|---|
+| `aluno` | `tag1` | `Lucas Batista, João Silva` |
+| `turma` | `tag2` | `3TACM1` |
+| `email` | `tag3` | `professor@escola.com` |
+| `filename` | `filename` | `09062026-3TACM1-Lucas-Batista.pdf` |
+| fixo | `projeto` | `cetep` |
+
+### Metadados automáticos registrados no Firestore (SML)
+
+Além das tags acima, a SML Storage API registra automaticamente:
+
+| Campo | Descrição |
+|---|---|
+| `uploadedAt` | Timestamp do servidor (Firestore Timestamp) |
+| `uploadedAtISO` | Data/hora em formato ISO 8601 |
+| `mes` | Mês no formato `YYYY-MM` (ex: `2026-06`) |
+| `format` | Sempre `pdf` |
+| `size` | Tamanho em bytes |
+| `url` | URL pública permanente do arquivo |
+| `path` | Caminho no Storage (ex: `cetep/2026-06/1234_arquivo.pdf`) |
+| `status` | `concluido` após confirmação |
+
+### Arquivo da Função Proxy
+
+**`functions/index.js`** — Cloud Function `smlUpload` (Node.js 22, 2ª geração)
+
+- Endpoint: `https://us-central1-diario-de-bordo-cetep.cloudfunctions.net/smlUpload`
+- Método: `POST`
+- CORS liberado para: `diario-de-bordo-cetep.web.app`, `diario-de-bordo-cetep.firebaseapp.com`, `localhost`
+- Secret: `SML_API_KEY` (Secret Manager do projeto `diario-de-bordo-cetep`)
+- Base URL da SML API: `https://us-east1-sml-storage.cloudfunctions.net`
+
+### Redeploy após alterações na função
+
+Sempre que `functions/index.js` for modificado, rodar no Cloud Shell:
+
+```bash
+cd diario-de-bordo-cetep && git pull && firebase deploy --only functions --project diario-de-bordo-cetep
+```
+
+### Queries úteis no Firestore da SML para consultar os uploads do CETEP
+
+```js
+// Todos os diários do projeto cetep
+db.collection('uploads').where('projeto', '==', 'cetep')
+
+// Por turma
+db.collection('uploads').where('tag2', '==', '3TACM1')
+
+// Por aluno
+db.collection('uploads').where('tag1', '==', 'Lucas Batista')
+
+// Por mês
+db.collection('uploads').where('mes', '==', '2026-06')
+
+// Combinado: turma + mês, ordenado por data
+db.collection('uploads')
+  .where('projeto', '==', 'cetep')
+  .where('tag2', '==', '3TACM1')
+  .where('mes', '==', '2026-06')
+  .orderBy('uploadedAt', 'desc')
+```
+
+---
+
 ## Estrutura do Projeto
 
 ```
