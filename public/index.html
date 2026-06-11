@@ -325,6 +325,96 @@
             color: var(--muted-foreground);
             margin-top: 64px;
         }
+        /* Callout de exemplo */
+        .callout-exemplo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 12px;
+            padding: 12px 16px;
+            background-color: #FEF3C7;
+            border-left: 4px solid #F59E0B;
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        .callout-exemplo:hover {
+            background-color: #FDE68A;
+        }
+        .callout-exemplo span {
+            font-size: 14px;
+            color: #78350F;
+            text-decoration: underline;
+            text-underline-offset: 2px;
+        }
+        .callout-exemplo i {
+            color: #F59E0B;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+        /* Modal de exemplo de imagem */
+        .modal-exemplo-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            padding: 16px;
+        }
+        .modal-exemplo-overlay.active {
+            display: flex;
+            animation: fadeIn 0.2s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to   { opacity: 1; }
+        }
+        .modal-exemplo-box {
+            background: #fff;
+            border-radius: var(--radius);
+            padding: 24px;
+            max-width: 560px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: scaleIn 0.2s ease;
+            position: relative;
+        }
+        @keyframes scaleIn {
+            from { transform: scale(0.92); opacity: 0; }
+            to   { transform: scale(1);    opacity: 1; }
+        }
+        .modal-exemplo-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        .modal-exemplo-header h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--foreground);
+            margin: 0;
+        }
+        .modal-exemplo-close {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: var(--muted-foreground);
+            line-height: 1;
+            padding: 4px;
+            border-radius: 4px;
+            transition: background-color 0.2s ease;
+        }
+        .modal-exemplo-close:hover { background-color: var(--secondary); }
+        .modal-exemplo-box img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
         /* Modal de confirmação */
         .modal-overlay {
             display: none;
@@ -431,6 +521,10 @@
                 <div>
                     <h3 class="font-medium">Instruções</h3>
                     <p class="text-sm">Preencha os dados do estudante e selecione até 6 fotos para incluir no diário de bordo. O sistema gerará automaticamente um PDF formatado.</p>
+                    <div class="callout-exemplo" id="btn-exemplo">
+                        <i class="fas fa-camera"></i>
+                        <span>📷 Clique aqui para ver um exemplo de como inserir a imagem no diário de bordo</span>
+                    </div>
                 </div>
             </div>
             <div class="card form-card">
@@ -482,6 +576,17 @@
         </footer>
     </div>
     
+    <!-- Modal de exemplo de imagem -->
+    <div class="modal-exemplo-overlay" id="modal-exemplo">
+        <div class="modal-exemplo-box">
+            <div class="modal-exemplo-header">
+                <h3>Exemplo de inserção de imagem</h3>
+                <button class="modal-exemplo-close" id="modal-exemplo-close">&times;</button>
+            </div>
+            <img src="/exemplo-imagem-diario.png" alt="Exemplo de como inserir a imagem no diário de bordo">
+        </div>
+    </div>
+
     <!-- Modal de confirmação -->
     <div class="modal-overlay" id="modal-confirmacao">
         <div class="modal-box">

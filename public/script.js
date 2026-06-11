@@ -1,5 +1,11 @@
 // Remover: const IMGBB_API_KEY = 'de77ac8c0ed26c71bbcb0ee71d45c707';
 
+// Modal de exemplo de imagem
+const modalExemplo = document.getElementById('modal-exemplo');
+document.getElementById('btn-exemplo').addEventListener('click', () => modalExemplo.classList.add('active'));
+document.getElementById('modal-exemplo-close').addEventListener('click', () => modalExemplo.classList.remove('active'));
+modalExemplo.addEventListener('click', (e) => { if (e.target === modalExemplo) modalExemplo.classList.remove('active'); });
+
 const progressContainer = document.getElementById('progress-container');
 const progressBar = document.getElementById('progress-bar');
 const successMessage = document.getElementById('success-message');
