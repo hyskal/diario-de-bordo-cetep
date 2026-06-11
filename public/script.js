@@ -194,17 +194,9 @@ document.getElementById('gerar-pdf').addEventListener('click', function() {
             Promise.all(processPromises)
                 .then(imageDatas => {
                     let y = 35;
-                    let cellWidth = 85; 
-                    let cellHeight;
-                    let margin;
-                    
-                    if (files.length <= 4) {
-                        cellHeight = 110;
-                        margin = 10;
-                    } else {
-                        cellHeight = 76.5;
-                        margin = 5;
-                    }
+                    const cellWidth = 85;
+                    const cellHeight = 76.5;
+                    const margin = 5;
                     
                     let x = 20; 
                     const cellPadding = 2;
