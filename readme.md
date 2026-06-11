@@ -10,7 +10,7 @@ O aplicativo oferece uma interface limpa e responsiva onde os usuários podem:
   * Adicionar ou remover múltiplos campos para nomes de estudantes.
   * Selecionar até seis fotos numa única área de arrastar e soltar.
   * O sistema comprime as imagens localmente antes de gerar o PDF.
-  * Um PDF é gerado dinamicamente com grade 2x2 (até 4 fotos) ou 2x3 (5-6 fotos).
+  * Um PDF é gerado dinamicamente com grade 2x2 (até 4 fotos) ou 2x3 (5-6 fotos), todos os quadros com tamanho fixo de 85×76.5mm.
   * A logomarca do CETEP é inserida no canto superior direito do PDF.
   * O PDF é enviado simultaneamente para o Firebase Storage e para a SML Storage API.
   * Modal de confirmação com SVG animado e botão para baixar cópia local.
