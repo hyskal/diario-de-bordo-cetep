@@ -141,16 +141,40 @@ document.getElementById('gerar-pdf').addEventListener('click', function() {
         function addLogo(doc) {
             doc.addImage(logoImg, 'PNG', pageWidth - logoWidthMm - logoMargin, logoMargin, logoWidthMm, logoHeightMm);
         }
-        
-        addLogo(doc);
-        const headerText = `${titulo} - ${turma} - ${email} - Gerado em: ${dataHora.toLocaleString()}`;
-        
+
         doc.setFontSize(10);
         const headerTextX = 20;
         const headerTextY = 20;
         const textWidth = pageWidth - (logoWidthMm + logoMargin) - headerTextX - 10;
-        const splitText = doc.splitTextToSize(headerText, textWidth);
-        doc.text(splitText, headerTextX, headerTextY, { align: 'left' });
+
+        function addHeader(doc) {
+            addLogo(doc);
+            if (studentNames.length > 1) {
+                const badgeText = `[${studentNames.length}]`;
+                const badgeW = doc.getTextWidth(badgeText) + 4;
+                const badgeH = 6;
+                const badgeX = headerTextX;
+                const badgeY = headerTextY - 4.5;
+                doc.setFillColor(30, 64, 175);
+                doc.roundedRect(badgeX, badgeY, badgeW, badgeH, 1, 1, 'F');
+                doc.setTextColor(255, 255, 255);
+                doc.setFont(undefined, 'bold');
+                doc.text(badgeText, badgeX + 2, headerTextY);
+                doc.setTextColor(0, 0, 0);
+                doc.setFont(undefined, 'normal');
+                const afterBadgeX = headerTextX + badgeW + 2;
+                const remainWidth = pageWidth - (logoWidthMm + logoMargin) - afterBadgeX - 10;
+                const headerText = `${titulo} - ${turma} - ${email} - Gerado em: ${dataHora.toLocaleString()}`;
+                const splitText = doc.splitTextToSize(headerText, remainWidth);
+                doc.text(splitText, afterBadgeX, headerTextY, { align: 'left' });
+            } else {
+                const headerText = `${titulo} - ${turma} - ${email} - Gerado em: ${dataHora.toLocaleString()}`;
+                const splitText = doc.splitTextToSize(headerText, textWidth);
+                doc.text(splitText, headerTextX, headerTextY, { align: 'left' });
+            }
+        }
+
+        addHeader(doc);
         
         const files = [];
         for (let i = 1; i <= 6; i++) {
@@ -191,8 +215,8 @@ document.getElementById('gerar-pdf').addEventListener('click', function() {
                     imageDatas.forEach((imageData, index) => {
                         if (doc.internal.pageSize.height < y + cellHeight + margin) {
                             doc.addPage();
-                            addLogo(doc);
-                            y = 20;
+                            addHeader(doc);
+                            y = 35;
                         }
                         
                         let finalWidth = cellWidth;
